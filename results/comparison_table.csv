@@ -1,0 +1,4 @@
+Modelo,AUC-ROC (media),AUC-ROC (desv.),Recall Withdrawn,F1 ponderado,Precisión Withdrawn,Tiempo (s)
+CatBoost,0.9459,0.0049,0.878,0.8713,0.7458,2625.4
+XGBoost,0.9452,0.005,0.8683,0.8697,0.7471,594.6
+RandomForest,0.9442,0.005,0.9126,0.8698,0.7279,1348.5

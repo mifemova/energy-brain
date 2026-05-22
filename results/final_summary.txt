@@ -1,0 +1,32 @@
+
+RESULTADOS DEL PILOTO EXPERIMENTAL
+==================================
+
+F1 — Preprocesamiento
+  Estudiantes totales : 32,593
+  Tasa de abandono    : 31.16 %
+  Variables construidas: 47
+
+F2 — Comparativa de modelos (10-fold Stratified CV con SMOTE in-fold)
+      Modelo  AUC-ROC (media)  AUC-ROC (desv.)  Recall Withdrawn  F1 ponderado  Precisión Withdrawn  Tiempo (s)
+    CatBoost           0.9459           0.0049            0.8780        0.8713               0.7458      2625.4
+     XGBoost           0.9452           0.0050            0.8683        0.8697               0.7471       594.6
+RandomForest           0.9442           0.0050            0.9126        0.8698               0.7279      1348.5
+  Mejor modelo: CatBoost
+
+F3 — Top 5 predictores SHAP del mejor modelo (CatBoost)
+last_interaction_day         2.122689
+num_assessments_submitted    0.939430
+studied_credits              0.236230
+interaction_days             0.171295
+first_interaction_day        0.147204
+
+F4 — Consistencia entre algoritmos (Kruskal-Wallis + Bonferroni)
+  α corregido         : 0.00063
+  Predictores robustos: 0
+  Algoritmo-dependientes: 20
+
+F5 — Distribución de riesgo (mejor modelo aplicado al dataset completo)
+  Alto  : 23.6%
+  Medio : 12.8%
+  Bajo  : 63.6%

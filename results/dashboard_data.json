@@ -1,0 +1,683 @@
+{
+  "class_balance": {
+    "n_total": 32593,
+    "n_withdrawn": 10156,
+    "n_not_withdrawn": 22437,
+    "withdrawn_pct": 31.16
+  },
+  "comparison_table": [
+    {
+      "Modelo": "CatBoost",
+      "AUC-ROC (media)": 0.9459,
+      "AUC-ROC (desv.)": 0.0049,
+      "Recall Withdrawn": 0.878,
+      "F1 ponderado": 0.8713,
+      "Precisión Withdrawn": 0.7458,
+      "Tiempo (s)": 2625.4
+    },
+    {
+      "Modelo": "XGBoost",
+      "AUC-ROC (media)": 0.9452,
+      "AUC-ROC (desv.)": 0.005,
+      "Recall Withdrawn": 0.8683,
+      "F1 ponderado": 0.8697,
+      "Precisión Withdrawn": 0.7471,
+      "Tiempo (s)": 594.6
+    },
+    {
+      "Modelo": "RandomForest",
+      "AUC-ROC (media)": 0.9442,
+      "AUC-ROC (desv.)": 0.005,
+      "Recall Withdrawn": 0.9126,
+      "F1 ponderado": 0.8698,
+      "Precisión Withdrawn": 0.7279,
+      "Tiempo (s)": 1348.5
+    }
+  ],
+  "per_fold_metrics": {
+    "RandomForest": [
+      {
+        "fold": 1,
+        "auc_roc": 0.9473710296573891,
+        "recall_withdrawn": 0.9192913385826772,
+        "f1_weighted": 0.8724467452853207,
+        "precision_withdrawn": 0.7302580140734949
+      },
+      {
+        "fold": 2,
+        "auc_roc": 0.9415938127219392,
+        "recall_withdrawn": 0.8946850393700787,
+        "f1_weighted": 0.8647359368665712,
+        "precision_withdrawn": 0.7248803827751196
+      },
+      {
+        "fold": 3,
+        "auc_roc": 0.939839791499993,
+        "recall_withdrawn": 0.9114173228346457,
+        "f1_weighted": 0.8708533790026038,
+        "precision_withdrawn": 0.7302839116719243
+      },
+      {
+        "fold": 4,
+        "auc_roc": 0.940392332481582,
+        "recall_withdrawn": 0.9064039408866995,
+        "f1_weighted": 0.8637771948777385,
+        "precision_withdrawn": 0.7181889149102264
+      },
+      {
+        "fold": 5,
+        "auc_roc": 0.9462294635722629,
+        "recall_withdrawn": 0.9349753694581281,
+        "f1_weighted": 0.866586610942197,
+        "precision_withdrawn": 0.7129977460555973
+      },
+      {
+        "fold": 6,
+        "auc_roc": 0.942421169094597,
+        "recall_withdrawn": 0.9280788177339901,
+        "f1_weighted": 0.8708274241973927,
+        "precision_withdrawn": 0.7235023041474654
+      },
+      {
+        "fold": 7,
+        "auc_roc": 0.9524672251345679,
+        "recall_withdrawn": 0.9113300492610837,
+        "f1_weighted": 0.8780687261929265,
+        "precision_withdrawn": 0.7447665056360708
+      },
+      {
+        "fold": 8,
+        "auc_roc": 0.9359229150357543,
+        "recall_withdrawn": 0.9084645669291339,
+        "f1_weighted": 0.8609103462924159,
+        "precision_withdrawn": 0.7121913580246914
+      },
+      {
+        "fold": 9,
+        "auc_roc": 0.9481236023885333,
+        "recall_withdrawn": 0.9084645669291339,
+        "f1_weighted": 0.8771341901060279,
+        "precision_withdrawn": 0.7443548387096774
+      },
+      {
+        "fold": 10,
+        "auc_roc": 0.9480318909924489,
+        "recall_withdrawn": 0.9025590551181102,
+        "f1_weighted": 0.8726687509948873,
+        "precision_withdrawn": 0.7377312952534192
+      }
+    ],
+    "XGBoost": [
+      {
+        "fold": 1,
+        "auc_roc": 0.9463648469409238,
+        "recall_withdrawn": 0.8553149606299213,
+        "f1_weighted": 0.8678628768559927,
+        "precision_withdrawn": 0.7491379310344828
+      },
+      {
+        "fold": 2,
+        "auc_roc": 0.9426651297598496,
+        "recall_withdrawn": 0.8720472440944882,
+        "f1_weighted": 0.8691476067893407,
+        "precision_withdrawn": 0.7439126784214946
+      },
+      {
+        "fold": 3,
+        "auc_roc": 0.9415543373756088,
+        "recall_withdrawn": 0.8513779527559056,
+        "f1_weighted": 0.8668927010802788,
+        "precision_withdrawn": 0.7489177489177489
+      },
+      {
+        "fold": 4,
+        "auc_roc": 0.9396360738652827,
+        "recall_withdrawn": 0.8738916256157635,
+        "f1_weighted": 0.8654017681402878,
+        "precision_withdrawn": 0.7348798674399337
+      },
+      {
+        "fold": 5,
+        "auc_roc": 0.9499446800663839,
+        "recall_withdrawn": 0.896551724137931,
+        "f1_weighted": 0.8769021427002259,
+        "precision_withdrawn": 0.7489711934156379
+      },
+      {
+        "fold": 6,
+        "auc_roc": 0.9424378528841003,
+        "recall_withdrawn": 0.8886699507389163,
+        "f1_weighted": 0.8663116290529672,
+        "precision_withdrawn": 0.7303643724696356
+      },
+      {
+        "fold": 7,
+        "auc_roc": 0.9532504851470369,
+        "recall_withdrawn": 0.865024630541872,
+        "f1_weighted": 0.8747302868136536,
+        "precision_withdrawn": 0.759515570934256
+      },
+      {
+        "fold": 8,
+        "auc_roc": 0.9382038520541598,
+        "recall_withdrawn": 0.859251968503937,
+        "f1_weighted": 0.8607057565811976,
+        "precision_withdrawn": 0.7317686504610227
+      },
+      {
+        "fold": 9,
+        "auc_roc": 0.9495901071048687,
+        "recall_withdrawn": 0.8523622047244095,
+        "f1_weighted": 0.8741060120311706,
+        "precision_withdrawn": 0.765017667844523
+      },
+      {
+        "fold": 10,
+        "auc_roc": 0.9487089756056462,
+        "recall_withdrawn": 0.8681102362204725,
+        "f1_weighted": 0.8747985726210692,
+        "precision_withdrawn": 0.7583834909716252
+      }
+    ],
+    "CatBoost": [
+      {
+        "fold": 1,
+        "auc_roc": 0.9470688239504822,
+        "recall_withdrawn": 0.8769685039370079,
+        "f1_weighted": 0.8709985078388134,
+        "precision_withdrawn": 0.7456066945606694
+      },
+      {
+        "fold": 2,
+        "auc_roc": 0.9435802998722753,
+        "recall_withdrawn": 0.8661417322834646,
+        "f1_weighted": 0.8684264363339432,
+        "precision_withdrawn": 0.7451312447078747
+      },
+      {
+        "fold": 3,
+        "auc_roc": 0.9417727676253035,
+        "recall_withdrawn": 0.8789370078740157,
+        "f1_weighted": 0.870754765566086,
+        "precision_withdrawn": 0.7441666666666666
+      },
+      {
+        "fold": 4,
+        "auc_roc": 0.9414027993642599,
+        "recall_withdrawn": 0.8788177339901477,
+        "f1_weighted": 0.8704307528967928,
+        "precision_withdrawn": 0.7433333333333333
+      },
+      {
+        "fold": 5,
+        "auc_roc": 0.9509338531650905,
+        "recall_withdrawn": 0.8886699507389163,
+        "f1_weighted": 0.8749944238708502,
+        "precision_withdrawn": 0.7485477178423237
+      },
+      {
+        "fold": 6,
+        "auc_roc": 0.943803728387907,
+        "recall_withdrawn": 0.8945812807881773,
+        "f1_weighted": 0.8725143938124238,
+        "precision_withdrawn": 0.7406199021207178
+      },
+      {
+        "fold": 7,
+        "auc_roc": 0.9531754080942721,
+        "recall_withdrawn": 0.8778325123152709,
+        "f1_weighted": 0.8782267972729831,
+        "precision_withdrawn": 0.7608881298035867
+      },
+      {
+        "fold": 8,
+        "auc_roc": 0.9380072649467637,
+        "recall_withdrawn": 0.8759842519685039,
+        "f1_weighted": 0.8585100983438602,
+        "precision_withdrawn": 0.7200647249190939
+      },
+      {
+        "fold": 9,
+        "auc_roc": 0.9501149244719356,
+        "recall_withdrawn": 0.8681102362204725,
+        "f1_weighted": 0.8721930955464575,
+        "precision_withdrawn": 0.7525597269624573
+      },
+      {
+        "fold": 10,
+        "auc_roc": 0.9489507601953233,
+        "recall_withdrawn": 0.8740157480314961,
+        "f1_weighted": 0.8755205588034969,
+        "precision_withdrawn": 0.7570332480818415
+      }
+    ]
+  },
+  "global_shap_importance": {
+    "RandomForest": {
+      "last_interaction_day": 0.1652584575795906,
+      "num_assessments_submitted": 0.09902472461223805,
+      "interaction_days": 0.03428752973827797,
+      "total_clicks": 0.02450717304622002,
+      "median_clicks_per_day": 0.015168414836138044,
+      "studied_credits": 0.014913158617566313,
+      "clicks_resource": 0.014539427797773332,
+      "clicks_quiz": 0.01453449249213264,
+      "clicks_oucontent": 0.014094817698215667,
+      "clicks_forumng": 0.013026033180226852,
+      "std_score": 0.013019787390181222,
+      "first_interaction_day": 0.011458312361187998,
+      "early_active_days": 0.010976139127062405,
+      "median_score": 0.010798493895297282,
+      "mean_score": 0.010334838098178043
+    },
+    "XGBoost": {
+      "last_interaction_day": 2.9385383129119873,
+      "num_assessments_submitted": 0.6620562672615051,
+      "studied_credits": 0.1951884776353836,
+      "region_Scotland": 0.13194116950035095,
+      "highest_education_Lower Than A Level": 0.10829690843820572,
+      "first_interaction_day": 0.0980728417634964,
+      "region_Wales": 0.0932324081659317,
+      "region_North Western Region": 0.09184033423662186,
+      "imd_band_10-20": 0.09032516181468964,
+      "early_active_days": 0.08995698392391205,
+      "imd_band_20-30%": 0.08863896876573563,
+      "imd_band_30-40%": 0.08335524797439575,
+      "interaction_days": 0.07945508509874344,
+      "gender_M": 0.07885543256998062,
+      "num_of_prev_attempts": 0.07710293680429459
+    },
+    "CatBoost": {
+      "last_interaction_day": 2.122688585585455,
+      "num_assessments_submitted": 0.9394298771963994,
+      "studied_credits": 0.2362302447880036,
+      "interaction_days": 0.17129455407948693,
+      "first_interaction_day": 0.1472041707587221,
+      "gender_M": 0.14579749039095408,
+      "region_Scotland": 0.12093474715656657,
+      "highest_education_Lower Than A Level": 0.11672391952699894,
+      "median_clicks_per_day": 0.11642780982491159,
+      "clicks_quiz": 0.09847016093482767,
+      "mean_score": 0.09705026246327532,
+      "imd_band_10-20": 0.09530140743232383,
+      "region_Wales": 0.08999036560468059,
+      "imd_band_30-40%": 0.085470021495012,
+      "std_score": 0.0834613912361225
+    }
+  },
+  "kruskal_results": [
+    {
+      "variable": "last_interaction_day",
+      "H_statistic": 264.20217352750313,
+      "p_value": 4.25820891721766e-58,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.165341464311312,
+        "XGBoost": -2.5193119049072266,
+        "CatBoost": -1.2001063032053423
+      }
+    },
+    {
+      "variable": "num_assessments_submitted",
+      "H_statistic": 109.46330509229566,
+      "p_value": 1.699594487272634e-24,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.07289629573756266,
+        "XGBoost": -0.16448652744293213,
+        "CatBoost": -0.18617811861966682
+      }
+    },
+    {
+      "variable": "studied_credits",
+      "H_statistic": 425.960892735084,
+      "p_value": 3.1898289060913908e-93,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.004375115295694214,
+        "XGBoost": -0.0937991738319397,
+        "CatBoost": -0.07106500754458106
+      }
+    },
+    {
+      "variable": "interaction_days",
+      "H_statistic": 563.9528450034043,
+      "p_value": 3.460952833509801e-123,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.015930831169609343,
+        "XGBoost": 0.02517051436007023,
+        "CatBoost": -0.0953816390046123
+      }
+    },
+    {
+      "variable": "region_Scotland",
+      "H_statistic": 3808.3653988555584,
+      "p_value": 0.0,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": 0.0016149463793810176,
+        "XGBoost": 0.059013791382312775,
+        "CatBoost": 0.05416614745851101
+      }
+    },
+    {
+      "variable": "first_interaction_day",
+      "H_statistic": 28.403267251499702,
+      "p_value": 6.796868729746068e-07,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.0007401361824710983,
+        "XGBoost": -0.025739111006259918,
+        "CatBoost": -0.002595368713353789
+      }
+    },
+    {
+      "variable": "highest_education_Lower Than A Level",
+      "H_statistic": 222.75739035392724,
+      "p_value": 4.254487804225818e-49,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": 0.0025425988892274994,
+        "XGBoost": 0.042419642210006714,
+        "CatBoost": 0.033929793454902796
+      }
+    },
+    {
+      "variable": "gender_M",
+      "H_statistic": 82.39380383600945,
+      "p_value": 1.2835501018343655e-18,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.002281476727761773,
+        "XGBoost": -0.044411078095436096,
+        "CatBoost": -0.09697075351262505
+      }
+    },
+    {
+      "variable": "median_clicks_per_day",
+      "H_statistic": 3661.9583302834462,
+      "p_value": 0.0,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.012130212921928457,
+        "XGBoost": -0.047237761318683624,
+        "CatBoost": -0.08105937063817449
+      }
+    },
+    {
+      "variable": "imd_band_10-20",
+      "H_statistic": 3706.274753720282,
+      "p_value": 0.0,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": 0.0009582206452588462,
+        "XGBoost": 0.04309689998626709,
+        "CatBoost": 0.045768876585539256
+      }
+    },
+    {
+      "variable": "region_Wales",
+      "H_statistic": 4773.422725147148,
+      "p_value": 0.0,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": 0.0011717236667047176,
+        "XGBoost": 0.04400242865085602,
+        "CatBoost": 0.03921965300942455
+      }
+    },
+    {
+      "variable": "imd_band_30-40%",
+      "H_statistic": 3706.1939353723133,
+      "p_value": 0.0,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": 0.0006374619126456272,
+        "XGBoost": 0.03746723756194115,
+        "CatBoost": 0.03964430040009452
+      }
+    },
+    {
+      "variable": "imd_band_20-30%",
+      "H_statistic": 3068.957245994197,
+      "p_value": 0.0,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": 0.0005680271860597343,
+        "XGBoost": 0.04019247740507126,
+        "CatBoost": 0.03777700278847601
+      }
+    },
+    {
+      "variable": "clicks_quiz",
+      "H_statistic": 114.70095034207124,
+      "p_value": 1.2388111302946437e-25,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.0018564096375949918,
+        "XGBoost": -0.010185888968408108,
+        "CatBoost": -0.018756194422183868
+      }
+    },
+    {
+      "variable": "region_North Western Region",
+      "H_statistic": 4521.382958710587,
+      "p_value": 0.0,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": 0.0006428615172647941,
+        "XGBoost": 0.04108668863773346,
+        "CatBoost": 0.030596465716972034
+      }
+    },
+    {
+      "variable": "imd_band_50-60%",
+      "H_statistic": 3867.4686727456624,
+      "p_value": 0.0,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": 0.0006902057015577584,
+        "XGBoost": 0.03055729530751705,
+        "CatBoost": 0.036238892176243084
+      }
+    },
+    {
+      "variable": "early_active_days",
+      "H_statistic": 125.98561910063982,
+      "p_value": 4.391070528517682e-28,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.004403518084253661,
+        "XGBoost": 0.00437417346984148,
+        "CatBoost": -0.018881292602334593
+      }
+    },
+    {
+      "variable": "mean_score",
+      "H_statistic": 837.0526744536529,
+      "p_value": 1.7231425678554123e-182,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.0059571582999715,
+        "XGBoost": -0.026314228773117065,
+        "CatBoost": -0.024527571991389573
+      }
+    },
+    {
+      "variable": "total_clicks",
+      "H_statistic": 1085.0986945711606,
+      "p_value": 2.3648974536251612e-236,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.01681538671740808,
+        "XGBoost": -0.003092826809734106,
+        "CatBoost": -0.0608983243624025
+      }
+    },
+    {
+      "variable": "clicks_url",
+      "H_statistic": 220.55409873939203,
+      "p_value": 1.2802240401956692e-48,
+      "p_value_significativo_Bonferroni": true,
+      "mediana_SHAP_por_modelo": {
+        "RandomForest": -0.004869812825186209,
+        "XGBoost": -0.02378247305750847,
+        "CatBoost": -0.028461902242827727
+      }
+    }
+  ],
+  "robust_predictors": [],
+  "algorithm_dependent": [
+    "last_interaction_day",
+    "num_assessments_submitted",
+    "studied_credits",
+    "interaction_days",
+    "region_Scotland",
+    "first_interaction_day",
+    "highest_education_Lower Than A Level",
+    "gender_M",
+    "median_clicks_per_day",
+    "imd_band_10-20",
+    "region_Wales",
+    "imd_band_30-40%",
+    "imd_band_20-30%",
+    "clicks_quiz",
+    "region_North Western Region",
+    "imd_band_50-60%",
+    "early_active_days",
+    "mean_score",
+    "total_clicks",
+    "clicks_url"
+  ],
+  "risk_distribution": {
+    "bajo": 0.636,
+    "alto": 0.236,
+    "medio": 0.128
+  },
+  "profiles": {
+    "alto": {
+      "level": "alto",
+      "probability_range": [
+        0.75,
+        1.0
+      ],
+      "typical_signals": [
+        "Total de clics en el LMS en el cuartil inferior del curso",
+        "Cero o muy pocos accesos al aula virtual en las primeras dos semanas",
+        "Calificación media en evaluaciones por debajo del percentil 25",
+        "Ausencia de interacción en foros (clicks_forumng = 0)",
+        "Una o más evaluaciones no entregadas"
+      ],
+      "recommended_actions": [
+        "Contacto sincrónico individualizado del tutor en menos de 48 horas, preferiblemente videollamada para verificar la situación del estudiante.",
+        "Diagnóstico estructurado de las causas del bajo compromiso (motivacionales, técnicas, socioeconómicas o personales).",
+        "Activación del protocolo institucional de retención: derivación a los servicios de orientación psicopedagógica y financiera si procede.",
+        "Plan de recuperación académica con hitos semanales y compromiso explícito del estudiante, registrado en el expediente.",
+        "Seguimiento semanal del nivel de actividad en el LMS hasta normalizar."
+      ],
+      "responsible_actors": [
+        "Tutor académico",
+        "Coordinador de programa",
+        "Servicio de orientación estudiantil"
+      ],
+      "time_horizon": "Intervención dentro de las primeras 48 horas; seguimiento durante las cuatro semanas siguientes."
+    },
+    "medio": {
+      "level": "medio",
+      "probability_range": [
+        0.5,
+        0.75
+      ],
+      "typical_signals": [
+        "Interacción LMS irregular: días con alta actividad seguidos de lapsos prolongados sin acceso.",
+        "Calificación media de evaluaciones entre los percentiles 25 y 50.",
+        "Tendencia descendente del número de clics semana a semana.",
+        "Participación esporádica en foros (clicks_forumng > 0 pero baja)."
+      ],
+      "recommended_actions": [
+        "Mensaje proactivo del tutor mediante el sistema de comunicación del LMS, recordando los próximos hitos del curso.",
+        "Invitación a sesión grupal de tutoría sincrónica con compañeros del mismo perfil de actividad, fomentando la integración social.",
+        "Sugerencia de recursos complementarios específicos según las evaluaciones con menor rendimiento.",
+        "Configuración de notificaciones automáticas en el LMS para recordatorios de entrega."
+      ],
+      "responsible_actors": [
+        "Tutor académico",
+        "Compañeros tutores entre pares"
+      ],
+      "time_horizon": "Contacto en menos de una semana; revisión quincenal."
+    },
+    "bajo": {
+      "level": "bajo",
+      "probability_range": [
+        0.0,
+        0.5
+      ],
+      "typical_signals": [
+        "Actividad regular en el LMS con clics distribuidos en el tiempo.",
+        "Calificaciones medias en el percentil 50 o superior.",
+        "Entregas puntuales de las evaluaciones programadas.",
+        "Participación habitual en foros y consulta de materiales."
+      ],
+      "recommended_actions": [
+        "Mensaje motivacional periódico reforzando el progreso observado.",
+        "Inclusión en programas de mentoría inversa: convertir al estudiante en mentor de compañeros con mayor riesgo.",
+        "Oferta de retos académicos opcionales (gamificación) que consolide su patrón positivo de aprendizaje.",
+        "Encuesta de satisfacción semestral para detectar señales tempranas de desmotivación antes de que se reflejen en métricas."
+      ],
+      "responsible_actors": [
+        "Tutor académico"
+      ],
+      "time_horizon": "Comunicación mensual; revisión semestral del perfil."
+    }
+  },
+  "feature_names": [
+    "num_of_prev_attempts",
+    "studied_credits",
+    "total_clicks",
+    "median_clicks_per_day",
+    "interaction_days",
+    "first_interaction_day",
+    "last_interaction_day",
+    "early_clicks",
+    "early_active_days",
+    "clicks_forumng",
+    "clicks_oucontent",
+    "clicks_quiz",
+    "clicks_resource",
+    "clicks_url",
+    "mean_score",
+    "median_score",
+    "std_score",
+    "num_assessments_submitted",
+    "gender_M",
+    "region_East Midlands Region",
+    "region_Ireland",
+    "region_London Region",
+    "region_North Region",
+    "region_North Western Region",
+    "region_Scotland",
+    "region_South East Region",
+    "region_South Region",
+    "region_South West Region",
+    "region_Wales",
+    "region_West Midlands Region",
+    "region_Yorkshire Region",
+    "highest_education_HE Qualification",
+    "highest_education_Lower Than A Level",
+    "highest_education_No Formal quals",
+    "highest_education_Post Graduate Qualification",
+    "imd_band_10-20",
+    "imd_band_20-30%",
+    "imd_band_30-40%",
+    "imd_band_40-50%",
+    "imd_band_50-60%",
+    "imd_band_60-70%",
+    "imd_band_70-80%",
+    "imd_band_80-90%",
+    "imd_band_90-100%",
+    "age_band_35-55",
+    "age_band_55_lt__eq_",
+    "disability_Y"
+  ]
+}

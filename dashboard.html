@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TFM · Dashboard de Resultados · Modelos Predictivos de Abandono</title>
+
+<!-- ─────────────────────────── TIPOGRAFÍA ─────────────────────────── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ─────────────────────────── DEPENDENCIAS ─────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+:root{
+  --navy:#0F2747;
+  --navy-2:#1A3A66;
+  --steel:#3F5F85;
+  --cream:#F6F1E7;
+  --paper:#FDFBF6;
+  --paper-2:#FAF6EC;
+  --coral:#D96A4A;
+  --coral-soft:#E89578;
+  --amber:#E8B14C;
+  --moss:#5C8A6A;
+  --burgundy:#8B2D3F;
+  --rule:#1F3A5F;
+  --ink:#0A1929;
+  --mute:#6B7A8E;
+  --line:rgba(15,39,71,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+.app{max-width:1480px;margin:0 auto;padding:32px 40px 80px}
+
+/* ════════════════════ MASTHEAD ════════════════════ */
+.masthead{
+  border-top:4px solid var(--navy);
+  padding-top:18px;
+  padding-bottom:28px;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.masthead::after{
+  content:"";
+  position:absolute;
+  bottom:-1px;left:0;
+  height:1px;width:120px;
+  background:var(--coral);
+}
+.kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.22em;
+  color:var(--coral);
+  text-transform:uppercase;
+  margin-bottom:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:24px;
+}
+.kicker .crumb{color:var(--mute);letter-spacing:.18em}
+.export-cluster{display:flex;gap:10px;align-items:center}
+.export-btn{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--navy);
+  background:var(--cream);
+  border:1px solid var(--navy);
+  padding:8px 14px;
+  cursor:pointer;
+  transition:all .2s;
+  white-space:nowrap;
+}
+.export-btn:hover{background:var(--navy);color:var(--paper)}
+.export-btn.primary{background:var(--coral);color:var(--paper);border-color:var(--coral)}
+.export-btn.primary:hover{background:var(--burgundy);border-color:var(--burgundy)}
+.export-btn::before{content:"▼ ";font-size:8px;margin-right:4px}
+.export-btn.primary::before{content:"■ "}
+
+.headline{
+  font-family:'Fraunces',serif;
+  font-weight:500;
+  font-size:46px;
+  line-height:1.05;
+  letter-spacing:-.02em;
+  color:var(--navy);
+  margin-bottom:14px;
+  max-width:900px;
+}
+.headline em{font-style:italic;color:var(--coral);font-weight:400}
+.dek{
+  font-family:'Fraunces',serif;
+  font-weight:400;
+  font-size:18px;
+  line-height:1.45;
+  color:var(--steel);
+  max-width:760px;
+  font-style:italic;
+}
+.byline{
+  margin-top:22px;
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:24px;
+  font-size:12px;
+  color:var(--mute);
+  font-family:'JetBrains Mono',monospace;
+  padding-top:18px;
+  border-top:1px dashed var(--line);
+}
+.byline div{display:flex;flex-direction:column;gap:4px}
+.byline span:first-child{font-size:9.5px;letter-spacing:.18em;color:var(--coral);text-transform:uppercase}
+.byline span:last-child{color:var(--ink);font-weight:500;font-size:13px}
+
+/* ════════════════════ TAB NAV ════════════════════ */
+.tabnav{
+  margin-top:32px;
+  display:flex;
+  gap:0;
+  border-bottom:1px solid var(--line);
+  overflow-x:auto;
+}
+.tab{
+  padding:16px 24px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--mute);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .18s;
+  white-space:nowrap;
+  background:none;
+  border-left:none;border-right:none;border-top:none;
+  position:relative;
+}
+.tab:hover{color:var(--navy)}
+.tab.active{color:var(--navy);border-bottom-color:var(--coral)}
+.tab .num{
+  display:inline-block;
+  width:26px;height:26px;line-height:26px;
+  text-align:center;
+  background:var(--cream);
+  border-radius:50%;
+  margin-right:10px;
+  font-size:10px;
+  color:var(--steel);
+  font-weight:700;
+  transition:all .2s;
+}
+.tab.active .num{background:var(--coral);color:var(--paper);transform:scale(1.05)}
+
+/* ════════════════════ PANELS ════════════════════ */
+.panel{display:none;padding-top:36px;animation:fadeIn .4s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.panel-head{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.panel-head h2{
+  font-family:'Fraunces',serif;
+  font-weight:500;
+  font-size:32px;
+  letter-spacing:-.015em;
+  color:var(--navy);
+  line-height:1.1;
+}
+.panel-head h2 .sec-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;
+  color:var(--coral);
+  letter-spacing:.18em;
+  display:block;
+  margin-bottom:6px;
+  font-weight:500;
+}
+.panel-head .panel-desc{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  color:var(--steel);
+  font-size:15px;
+  max-width:520px;
+  text-align:right;
+}
+
+/* ════════════════════ COMPONENTES ════════════════════ */
+
+/* Hero stats */
+.stat-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+.stat-cell{
+  padding:24px 28px;
+  border-right:1px solid var(--line);
+  position:relative;
+}
+.stat-cell:last-child{border-right:none}
+.stat-cell .label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--mute);
+  margin-bottom:10px;
+}
+.stat-cell .value{
+  font-family:'Fraunces',serif;
+  font-weight:500;
+  font-size:44px;
+  line-height:1;
+  color:var(--navy);
+  letter-spacing:-.02em;
+}
+.stat-cell .value .unit{
+  font-size:18px;
+  color:var(--coral);
+  margin-left:4px;
+  font-weight:400;
+}
+.stat-cell .sub{
+  margin-top:8px;
+  font-size:11.5px;
+  color:var(--steel);
+  font-family:'Inter',sans-serif;
+}
+
+/* Two-col grid */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:36px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:36px}
+
+/* Card */
+.card{
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  padding:28px;
+  position:relative;
+}
+.card.no-bg{background:transparent;border:none;padding:0}
+.card h3{
+  font-family:'Fraunces',serif;
+  font-weight:500;
+  font-size:20px;
+  color:var(--navy);
+  margin-bottom:8px;
+  letter-spacing:-.01em;
+}
+.card .subtitle{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--coral);
+  margin-bottom:16px;
+}
+.card .body{font-size:13.5px;line-height:1.6;color:var(--ink)}
+.card .body p{margin-bottom:12px}
+.card .body p:last-child{margin-bottom:0}
+
+.chart-wrap{position:relative;height:300px;margin-top:8px}
+.chart-wrap.tall{height:380px}
+.chart-wrap.short{height:220px}
+.chart-wrap.xtall{height:580px}
+
+/* Table */
+.tbl-wrap{overflow-x:auto}
+table.editorial{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13.5px;
+}
+table.editorial thead th{
+  text-align:left;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--coral);
+  padding:14px 16px 12px;
+  border-bottom:2px solid var(--navy);
+  font-weight:500;
+  white-space:nowrap;
+}
+table.editorial thead th.num{text-align:right}
+table.editorial tbody td{
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+table.editorial tbody td.num{
+  text-align:right;
+  font-family:'JetBrains Mono',monospace;
+  font-variant-numeric:tabular-nums;
+}
+table.editorial tbody tr:hover{background:var(--cream)}
+table.editorial tbody td.best{background:rgba(217,106,74,.08);font-weight:700;color:var(--burgundy)}
+table.editorial tbody td.var-name{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:500;color:var(--navy)}
+table.editorial tbody td.leak{color:var(--burgundy);font-weight:600}
+table.editorial tbody td.leak::after{content:" ⚠";color:var(--coral);font-weight:400}
+
+/* Pull quote / callout */
+.callout{
+  border-left:4px solid var(--coral);
+  padding:20px 24px;
+  background:rgba(217,106,74,.06);
+  margin:24px 0;
+}
+.callout.critical{border-left-color:var(--burgundy);background:rgba(139,45,63,.05)}
+.callout.success{border-left-color:var(--moss);background:rgba(92,138,106,.05)}
+.callout .tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--coral);
+  margin-bottom:8px;
+  display:block;
+}
+.callout.critical .tag{color:var(--burgundy)}
+.callout.success .tag{color:var(--moss)}
+.callout p{
+  font-family:'Fraunces',serif;
+  font-size:16px;
+  line-height:1.5;
+  color:var(--navy);
+  font-style:italic;
+}
+.callout p strong{font-style:normal;font-weight:600;color:var(--burgundy)}
+
+/* Profile cards (Pedagogía) */
+.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px}
+.profile-card{
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  border-top:6px solid var(--moss);
+  padding:0;
+  display:flex;
+  flex-direction:column;
+}
+.profile-card.alto{border-top-color:var(--burgundy)}
+.profile-card.medio{border-top-color:var(--amber)}
+.profile-card.bajo{border-top-color:var(--moss)}
+.profile-card header{
+  padding:20px 24px 18px;
+  border-bottom:1px solid var(--line);
+}
+.profile-card .level-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  font-weight:700;
+  padding:3px 10px;
+  display:inline-block;
+  margin-bottom:10px;
+}
+.profile-card.alto .level-tag{background:var(--burgundy);color:var(--paper)}
+.profile-card.medio .level-tag{background:var(--amber);color:var(--navy)}
+.profile-card.bajo .level-tag{background:var(--moss);color:var(--paper)}
+.profile-card .prob-range{
+  font-family:'Fraunces',serif;
+  font-size:28px;
+  font-weight:500;
+  color:var(--navy);
+  letter-spacing:-.01em;
+}
+.profile-card .prob-range .arrow{color:var(--mute);margin:0 6px;font-weight:300}
+.profile-card .horizon{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-size:13.5px;
+  color:var(--steel);
+  margin-top:10px;
+  line-height:1.45;
+}
+.profile-card .section{padding:18px 24px;border-bottom:1px solid var(--line)}
+.profile-card .section:last-child{border-bottom:none}
+.profile-card .section h4{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--coral);
+  margin-bottom:12px;
+  font-weight:500;
+}
+.profile-card ul{list-style:none;padding:0}
+.profile-card ul li{
+  padding-left:18px;
+  position:relative;
+  margin-bottom:10px;
+  font-size:13px;
+  line-height:1.5;
+  color:var(--ink);
+}
+.profile-card ul li::before{
+  content:"▸";
+  position:absolute;
+  left:0;
+  color:var(--coral);
+  font-size:10px;
+  top:2px;
+}
+.profile-card ul li:last-child{margin-bottom:0}
+.profile-card .actors{display:flex;flex-wrap:wrap;gap:6px}
+.profile-card .actor-chip{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  padding:5px 10px;
+  background:var(--cream);
+  border:1px solid var(--line);
+  color:var(--navy);
+  letter-spacing:.04em;
+}
+
+/* SHAP ranking lists */
+.rank-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:8px}
+.rank-card{
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  padding:24px;
+}
+.rank-card h4{
+  font-family:'Fraunces',serif;
+  font-weight:500;
+  font-size:18px;
+  color:var(--navy);
+  margin-bottom:4px;
+}
+.rank-card .rank-meta{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--coral);
+  margin-bottom:16px;
+}
+.rank-list{list-style:none}
+.rank-list li{
+  display:grid;
+  grid-template-columns:24px 1fr auto;
+  gap:10px;
+  align-items:center;
+  padding:9px 0;
+  border-bottom:1px dashed var(--line);
+  font-size:12.5px;
+}
+.rank-list li:last-child{border-bottom:none}
+.rank-list .pos{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:var(--mute);
+  font-weight:500;
+}
+.rank-list .var{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;
+  color:var(--navy);
+  word-break:break-word;
+}
+.rank-list .val{
+  font-family:'JetBrains Mono',monospace;
+  font-variant-numeric:tabular-nums;
+  font-size:11px;
+  color:var(--steel);
+  white-space:nowrap;
+}
+.rank-list li.leak .var{color:var(--burgundy);font-weight:600}
+.rank-list li.leak::after{display:none}
+.rank-list li.leak .pos{background:var(--burgundy);color:var(--paper);text-align:center;border-radius:50%;font-size:9.5px;height:18px;line-height:18px;width:18px;font-weight:700}
+.rank-list li.actionable .var{color:#3F6B4D;font-weight:600}
+.rank-list li.actionable .pos{background:#5C8A6A;color:var(--paper);text-align:center;border-radius:50%;font-size:9.5px;height:18px;line-height:18px;width:18px;font-weight:700}
+.rank-list li.actionable .val{color:#4F7D5C}
+
+/* Robust core list */
+.robust-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+.robust-list .pill{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  padding:7px 13px;
+  background:var(--cream);
+  border:1px solid var(--navy);
+  color:var(--navy);
+}
+.robust-list .pill.leak{background:rgba(139,45,63,.1);border-color:var(--burgundy);color:var(--burgundy)}
+.robust-list .pill.actionable{background:rgba(92,138,106,.30);border-color:#4F7D5C;color:#2F5C3D;font-weight:600}
+
+/* Pipeline phases */
+.phases{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:0;
+  margin-top:24px;
+  border:1px solid var(--line);
+}
+.phase{
+  padding:20px 18px;
+  border-right:1px solid var(--line);
+  position:relative;
+}
+.phase:last-child{border-right:none}
+.phase .pcode{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:.16em;
+  color:var(--coral);
+  font-weight:700;
+  margin-bottom:8px;
+}
+.phase .ptitle{
+  font-family:'Fraunces',serif;
+  font-size:15px;
+  color:var(--navy);
+  margin-bottom:6px;
+  font-weight:500;
+  letter-spacing:-.01em;
+}
+.phase .pdesc{font-size:12px;color:var(--steel);line-height:1.45}
+.phase::after{
+  content:"→";
+  position:absolute;
+  right:-9px;
+  top:50%;
+  transform:translateY(-50%);
+  background:var(--paper);
+  color:var(--coral);
+  font-family:'JetBrains Mono',monospace;
+  font-size:14px;
+  width:18px;text-align:center;
+  z-index:2;
+}
+.phase:last-child::after{display:none}
+
+/* Footer */
+footer{
+  margin-top:64px;
+  padding-top:24px;
+  border-top:4px solid var(--navy);
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.16em;
+  color:var(--mute);
+  text-transform:uppercase;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:16px;
+}
+footer .colophon{color:var(--coral)}
+
+/* PDF capture toggling */
+body.pdf-export .tabnav{display:none}
+body.pdf-export .panel{display:block !important;page-break-after:always;padding-top:24px}
+body.pdf-export .panel:last-of-type{page-break-after:auto}
+body.pdf-export .panel-head{border-top:3px solid var(--navy);padding-top:18px;margin-top:24px}
+body.pdf-export .export-cluster{display:none}
+
+/* Responsive */
+@media (max-width:1100px){
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .stat-cell{border-bottom:1px solid var(--line)}
+  .two-col,.three-col,.rank-grid,.profile-grid{grid-template-columns:1fr;gap:20px}
+  .phases{grid-template-columns:1fr}
+  .phase{border-right:none;border-bottom:1px solid var(--line)}
+  .phase::after{display:none}
+  .byline{grid-template-columns:repeat(2,1fr)}
+  .headline{font-size:32px}
+  .panel-head{flex-direction:column;align-items:flex-start}
+  .panel-head .panel-desc{text-align:left}
+}
+
+/* Loading overlay for PDF export */
+.pdf-loading{
+  position:fixed;
+  inset:0;
+  background:rgba(15,39,71,.85);
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  color:var(--paper);
+  flex-direction:column;
+  gap:16px;
+}
+.pdf-loading.active{display:flex}
+.pdf-loading .spinner{
+  width:48px;height:48px;
+  border:3px solid var(--coral);
+  border-top-color:transparent;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+.pdf-loading .msg{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-size:18px;
+}
+.pdf-loading .sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--coral);
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ════════════════════ PIE DE FIGURA ════════════════════ */
+.fig-caption{
+  font-family:'Inter',sans-serif;
+  font-size:11.5px;
+  line-height:1.6;
+  color:var(--steel);
+  margin-top:16px;
+  padding-top:13px;
+  border-top:1px dotted var(--line);
+}
+.fig-caption .fig-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--coral);
+  font-weight:500;
+  margin-right:8px;
+}
+.fig-caption strong{color:var(--navy);font-weight:600}
+.fig-caption code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  background:var(--cream);
+  padding:1px 5px;
+  color:var(--burgundy);
+}
+
+/* ════════════════════ LEYENDA SHAP ════════════════════ */
+.shap-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 24px;
+  margin-top:18px;
+  padding-top:15px;
+  border-top:1px dotted var(--line);
+}
+.shap-legend .lg-item{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:11.5px;
+  color:var(--steel);
+  font-family:'Inter',sans-serif;
+}
+.shap-legend .lg-item strong{color:var(--navy);font-weight:600}
+.shap-legend .sw{
+  width:14px;height:14px;
+  border:1.5px solid;
+  flex-shrink:0;
+}
+.shap-legend .sw-leak{background:rgba(139,45,63,.14);border-color:var(--burgundy)}
+.shap-legend .sw-act{background:rgba(92,138,106,.30);border-color:#4F7D5C}
+.shap-legend .sw-neu{background:var(--cream);border-color:var(--navy)}
+
+/* ════════════════════ BOTÓN Y OVERLAY DE CIERRE ════════════════════ */
+.export-btn.close-btn{
+  background:var(--paper);
+  color:var(--burgundy);
+  border-color:var(--burgundy);
+}
+.export-btn.close-btn:hover{background:var(--burgundy);color:var(--paper);border-color:var(--burgundy)}
+.export-btn.close-btn::before{content:"✕ ";font-size:9px}
+
+.close-overlay{
+  position:fixed;
+  inset:0;
+  background:var(--navy);
+  z-index:10000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:32px;
+}
+.close-overlay.active{display:flex}
+.close-card{
+  background:var(--paper);
+  border-top:5px solid var(--coral);
+  max-width:480px;
+  width:100%;
+  padding:44px 40px 40px;
+  text-align:center;
+}
+.close-card .close-mark{
+  width:58px;height:58px;line-height:54px;
+  margin:0 auto 22px;
+  border:2px solid var(--moss);
+  border-radius:50%;
+  color:var(--moss);
+  font-size:26px;
+}
+.close-card h2{
+  font-family:'Fraunces',serif;
+  font-weight:500;
+  font-size:28px;
+  color:var(--navy);
+  letter-spacing:-.015em;
+  margin-bottom:12px;
+}
+.close-card p{
+  font-size:13.5px;
+  line-height:1.6;
+  color:var(--steel);
+  margin-bottom:26px;
+}
+.close-card .reopen-btn{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--paper);
+  background:var(--coral);
+  border:1px solid var(--coral);
+  padding:12px 22px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.close-card .reopen-btn:hover{background:var(--burgundy);border-color:var(--burgundy)}
+.close-card .credit-line{
+  margin-top:26px;
+  padding-top:18px;
+  border-top:1px dashed var(--line);
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.1em;
+  color:var(--mute);
+  line-height:1.7;
+}
+</style>
+</head>
+<body>
+
+<div class="pdf-loading" id="pdf-loading">
+  <div class="spinner"></div>
+  <div class="msg" id="pdf-msg">Generando PDF…</div>
+  <div class="sub">Por favor, no cierres la ventana</div>
+</div>
+
+<!-- ════════════════════ OVERLAY DE CIERRE ════════════════════ -->
+<div class="close-overlay" id="close-overlay">
+  <div class="close-card">
+    <div class="close-mark">✓</div>
+    <h2>Panel de resultados cerrado</h2>
+    <p>Has finalizado la consulta del dashboard de resultados del Trabajo Fin de Máster. Puedes reabrirlo en cualquier momento para revisar las métricas, la explicabilidad SHAP y las recomendaciones pedagógicas.</p>
+    <button class="reopen-btn" onclick="reopenDashboard()">Volver a abrir el dashboard</button>
+    <div class="credit-line">
+      Trabajo Fin de Máster · UNIR<br>
+      Gloria Lida Alzate Suárez · Miguel Fernando Morales Valderrama
+    </div>
+  </div>
+</div>
+
+<div class="app" id="app-root">
+
+  <!-- ════════════════════ MASTHEAD ════════════════════ -->
+  <header class="masthead">
+    <div class="kicker">
+      <span><span class="crumb">Trabajo Fin de Máster · UNIR · </span>Vol. 01 / Mayo 2026</span>
+      <div class="export-cluster">
+        <button class="export-btn" onclick="exportSection()">Exportar sección a PDF</button>
+        <button class="export-btn primary" onclick="exportFull()">Exportar memoria completa</button>
+        <button class="export-btn close-btn" onclick="closeDashboard()">Cerrar dashboard</button>
+      </div>
+    </div>
+    <h1 class="headline">Predicción del abandono en <em>educación virtual</em>: piloto experimental sobre el OULAD</h1>
+    <p class="dek">Comparativa empírica de tres algoritmos de ensamble — Random Forest, XGBoost y CatBoost — bajo validación cruzada anidada con SMOTE, explicabilidad mediante valores SHAP y análisis de consistencia estadística sobre 32.593 estudiantes.</p>
+    <div class="byline">
+      <div><span>Integrantes del TFM</span><span id="meta-author">Gloria Lida Alzate Suárez · Miguel Fernando Morales Valderrama</span></div>
+      <div><span>Conjunto de datos</span><span>Open University Learning Analytics</span></div>
+      <div><span>Cohorte analizada</span><span id="meta-cohort">32.593 estudiantes</span></div>
+      <div><span>Tasa de abandono</span><span id="meta-rate">31,16 %</span></div>
+    </div>
+  </header>
+
+  <!-- ════════════════════ TAB NAV ════════════════════ -->
+  <nav class="tabnav" role="tablist">
+    <button class="tab active" data-panel="resumen"><span class="num">01</span>Resumen</button>
+    <button class="tab" data-panel="modelos"><span class="num">02</span>Modelos</button>
+    <button class="tab" data-panel="shap"><span class="num">03</span>SHAP</button>
+    <button class="tab" data-panel="consistencia"><span class="num">04</span>Consistencia</button>
+    <button class="tab" data-panel="pedagogia"><span class="num">05</span>Pedagogía</button>
+  </nav>
+
+  <!-- ═══════════ PANEL 01 · RESUMEN ═══════════ -->
+  <section class="panel active" id="panel-resumen" data-title="01 · Resumen del experimento">
+    <div class="panel-head">
+      <h2><span class="sec-num">§ 01</span>Resumen del piloto experimental</h2>
+      <p class="panel-desc">Composición del corpus, distribución de la clase objetivo y resumen comparativo de los tres algoritmos evaluados sobre el OULAD.</p>
+    </div>
+
+    <div class="stat-row" id="stat-row"></div>
+
+    <div class="two-col">
+      <div class="card">
+        <span class="subtitle">Composición de la clase objetivo</span>
+        <h3>Balance entre permanencia y abandono</h3>
+        <p class="body" style="margin-bottom:14px">El piloto trabaja sobre el conjunto íntegro del OULAD. La proporción de la clase positiva (<em>Withdrawn</em>) justifica el uso de SMOTE intra-pliegue pero descarta tratamientos propios del desbalance extremo.</p>
+        <div class="chart-wrap"><canvas id="chart-balance"></canvas></div>
+        <p class="fig-caption"><span class="fig-tag">Figura 1</span>Reparto de la cohorte entre permanencia y abandono. La clase <code>Withdrawn</code> reúne el 31,16&nbsp;% de los 32.593 registros del OULAD. Se trata de un <strong>desbalance moderado</strong>: suficiente para justificar el remuestreo sintético intra-pliegue (SMOTE), pero lejos del desbalance extremo que exigiría técnicas de coste asimétrico o submuestreo agresivo.</p>
+      </div>
+      <div class="card">
+        <span class="subtitle">Distribución del riesgo predicho</span>
+        <h3>Estratificación operativa de la cohorte</h3>
+        <p class="body" style="margin-bottom:14px">La asignación a perfiles de riesgo se realiza sobre la probabilidad predicha por el mejor modelo. La suma <em>alto + medio</em> sobreestima ligeramente la tasa real de abandono, consistente con una calibración conservadora.</p>
+        <div class="chart-wrap"><canvas id="chart-risk"></canvas></div>
+        <p class="fig-caption"><span class="fig-tag">Figura 2</span>Estratificación de la cohorte según la probabilidad de abandono predicha por el mejor modelo. La suma de los perfiles <strong>medio y alto</strong> supera ligeramente la prevalencia real de abandono, comportamiento esperable de un umbral de decisión deliberadamente conservador que prioriza la sensibilidad —es decir, prefiere una falsa alarma antes que omitir a un estudiante en riesgo.</p>
+      </div>
+    </div>
+
+    <div class="card no-bg">
+      <span class="subtitle">Arquitectura del pipeline experimental</span>
+      <h3 style="margin-bottom:6px">Cinco fases encadenadas, del dato al protocolo pedagógico</h3>
+      <p class="body" style="max-width:880px">El pipeline implementa la metodología CRISP-DM ajustada al dominio educativo: preprocesamiento robusto, validación cruzada anidada con SMOTE intra-pliegue, explicabilidad mediante SHAP, análisis estadístico de consistencia entre algoritmos y traducción de los hallazgos a recomendaciones pedagógicas operacionales.</p>
+      <div class="phases">
+        <div class="phase"><div class="pcode">F1 · OE1</div><div class="ptitle">Preprocesamiento</div><div class="pdesc">Integración de 7 tablas OULAD, codificación binaria de la variable objetivo, imputación e ingeniería de variables tempranas.</div></div>
+        <div class="phase"><div class="pcode">F2 · OE2</div><div class="ptitle">Modelado anidado</div><div class="pdesc">CV estratificado 10×3, búsqueda de hiperparámetros con GridSearchCV y SMOTE aplicado exclusivamente sobre el train de cada pliegue.</div></div>
+        <div class="phase"><div class="pcode">F3 · OE3</div><div class="ptitle">Explicabilidad SHAP</div><div class="pdesc">Cálculo de valores SHAP por modelo con TreeExplainer y generación de gráficos globales, de dependencia y waterfall.</div></div>
+        <div class="phase"><div class="pcode">F4 · OE4</div><div class="ptitle">Consistencia</div><div class="pdesc">Pruebas no paramétricas de Kruskal-Wallis y Mann-Whitney con corrección de Bonferroni sobre las 20 variables más importantes.</div></div>
+        <div class="phase"><div class="pcode">F5 · OE5</div><div class="ptitle">Pedagogía</div><div class="pdesc">Diseño de perfiles de riesgo, señales detectables, acciones recomendadas y responsables institucionales.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PANEL 02 · MODELOS ═══════════ -->
+  <section class="panel" id="panel-modelos" data-title="02 · Comparativa de modelos">
+    <div class="panel-head">
+      <h2><span class="sec-num">§ 02</span>Comparativa de algoritmos de ensamble</h2>
+      <p class="panel-desc">Métricas de discriminación, sensibilidad y precisión sobre los 10 pliegues de la validación cruzada externa.</p>
+    </div>
+
+    <div class="card">
+      <span class="subtitle">Tabla comparativa principal</span>
+      <h3>Tres modelos, indistinguibles en discriminación global</h3>
+      <p class="body" style="margin-bottom:18px;max-width:880px">La diferencia de AUC-ROC entre el modelo de mayor y menor rendimiento (0.0017) es inferior a la desviación entre pliegues de cualquiera de ellos (±0.005). Estadísticamente, los tres algoritmos son equivalentes en discriminación global. Donde sí divergen es en el <em>trade-off</em> operativo entre captura (recall) y pureza (precisión).</p>
+      <div class="tbl-wrap">
+        <table class="editorial" id="tbl-comparison">
+          <thead>
+            <tr>
+              <th>Modelo</th>
+              <th class="num">AUC-ROC</th>
+              <th class="num">Desv.</th>
+              <th class="num">Recall Withdrawn</th>
+              <th class="num">Precisión Withdrawn</th>
+              <th class="num">F1 ponderado</th>
+              <th class="num">Tiempo (min)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:36px">
+      <div class="card">
+        <span class="subtitle">Métricas comparadas</span>
+        <h3>Visualización lado a lado</h3>
+        <div class="chart-wrap tall"><canvas id="chart-models-bar"></canvas></div>
+        <p class="fig-caption"><span class="fig-tag">Figura 3</span>Comparación directa de cuatro métricas de evaluación entre los tres algoritmos. Las barras de AUC-ROC resultan visualmente indistinguibles, lo que confirma un <strong>rendimiento equivalente en discriminación global</strong>. Las diferencias se concentran en el equilibrio entre <em>recall</em> y precisión: Random Forest capta más casos de abandono a costa de cierta pureza, mientras XGBoost y CatBoost ofrecen un compromiso más simétrico.</p>
+      </div>
+      <div class="card">
+        <span class="subtitle">Estabilidad entre pliegues</span>
+        <h3>AUC-ROC por pliegue de validación</h3>
+        <div class="chart-wrap tall"><canvas id="chart-folds"></canvas></div>
+        <p class="fig-caption"><span class="fig-tag">Figura 4</span>Evolución del AUC-ROC a lo largo de los diez pliegues de la validación cruzada externa. Las tres curvas se mantienen dentro de una banda muy estrecha (±0,005), señal de <strong>estabilidad frente a la partición de los datos</strong>: el rendimiento observado no depende de un reparto afortunado de la muestra, sino que es una propiedad consistente de cada modelo.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="tag">Hallazgo metodológico · Capítulo 6</span>
+      <p>La convergencia de tres paradigmas algorítmicos distintos sobre un AUC-ROC estadísticamente equivalente sugiere que el techo de discriminación está determinado por el <strong>contenido informacional de las variables</strong> y no por la capacidad expresiva del clasificador.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ PANEL 03 · SHAP ═══════════ -->
+  <section class="panel" id="panel-shap" data-title="03 · Explicabilidad SHAP">
+    <div class="panel-head">
+      <h2><span class="sec-num">§ 03</span>Importancia global de variables (SHAP)</h2>
+      <p class="panel-desc">Ranking de variables por valor SHAP medio absoluto, comparado entre los tres modelos. Las variables marcadas indican fuga temporal.</p>
+    </div>
+
+    <div class="callout critical">
+      <span class="tag">Diagnóstico crítico · Fuga temporal detectada</span>
+      <p>Las variables <strong>last_interaction_day</strong> y <strong>num_assessments_submitted</strong> dominan los tres modelos con magnitudes desproporcionadas (ratio sobre la tercera variable de 4.8× en RandomForest, 15.1× en XGBoost y 9.0× en CatBoost). Ambas están intrínsecamente vinculadas al evento de abandono: el último día de interacción es por definición anterior al abandono cuando este se produce; el número de evaluaciones entregadas refleja la trayectoria ya consumada. El alto AUC-ROC obtenido debe interpretarse como capacidad para clasificar trayectorias <em>ya cerradas</em>, no como evidencia de capacidad predictiva temprana.</p>
+    </div>
+
+    <div class="rank-grid" id="rank-grid"></div>
+    <p class="fig-caption"><span class="fig-tag">Cuadro 1</span>Listados de los quince predictores de mayor valor SHAP medio absoluto en cada modelo. Las variables resaltadas en <strong style="color:var(--burgundy)">burdeos</strong> —con su posición en círculo— corresponden a fuga temporal; las resaltadas en <strong style="color:#3F6B4D">verde</strong> son predictores accionables, con valor pedagógico y disponibles antes de que se produzca el abandono. El resto se muestra en tono neutro.</p>
+
+    <div class="card" style="margin-top:36px">
+      <span class="subtitle">Gráfico comparativo · Importancia SHAP normalizada</span>
+      <h3>Magnitud relativa de cada predictor en los tres modelos</h3>
+      <p class="body" style="margin-bottom:6px;max-width:880px">Los tres algoritmos generan valores SHAP en escalas internas dispares —Random Forest opera sobre probabilidades, XGBoost sobre <em>log-odds</em> y CatBoost bajo <em>ordered boosting</em>—, lo que impide compararlos en valor absoluto. Para resolverlo, el valor SHAP medio de cada variable se expresa como porcentaje del predictor más influyente de su propio modelo. La lectura resultante es la <strong>jerarquía relativa</strong> de la importancia, no su magnitud bruta.</p>
+      <div class="chart-wrap xtall"><canvas id="chart-shap"></canvas></div>
+      <p class="fig-caption"><span class="fig-tag">Figura 5</span>Importancia SHAP normalizada de los catorce predictores más influyentes, agrupada por modelo (100&nbsp;% = predictor dominante de cada algoritmo). Las variables marcadas con <code>⚠</code> presentan fuga temporal. Dos hechos se hacen visibles: <strong>last_interaction_day</strong> y <strong>num_assessments_submitted</strong> acaparan la importancia y dejan al resto de variables un peso muy inferior; y los perfiles de barras de los tres modelos son casi paralelos, lo que indica que el acuerdo sobre <em>qué</em> variables importan es robusto frente a la elección del algoritmo, aunque diverja la escala con que cada uno las cuantifica.</p>
+    </div>
+
+    <div class="card" style="margin-top:36px">
+      <span class="subtitle">Núcleo robusto · Variables presentes en el top-10 de los tres modelos</span>
+      <h3>Coincidencia algorítmica sobre los predictores principales</h3>
+      <p class="body" style="margin-bottom:16px">A pesar de la diferencia de escalas, los tres modelos coinciden sustancialmente en qué variables son más importantes. El código de color distingue su naturaleza: las marcadas en <strong style="color:var(--burgundy)">burdeos</strong> corresponden a fuga temporal —variables posteriores o contemporáneas al abandono—, mientras que las marcadas en <strong style="color:#3F6B4D">verde</strong> son los predictores con valor pedagógico operativo y disponibilidad temporal previa al evento, los únicos aptos para una intervención genuinamente preventiva.</p>
+      <div class="robust-list" id="robust-list"></div>
+      <div class="shap-legend">
+        <span class="lg-item"><span class="sw sw-leak"></span><span><strong>Fuga temporal</strong> — variable posterior o contemporánea al abandono</span></span>
+        <span class="lg-item"><span class="sw sw-act"></span><span><strong>Predictor accionable</strong> — valor pedagógico, disponible antes del evento</span></span>
+        <span class="lg-item"><span class="sw sw-neu"></span><span><strong>Otro predictor</strong> — sin clasificación específica</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PANEL 04 · CONSISTENCIA ═══════════ -->
+  <section class="panel" id="panel-consistencia" data-title="04 · Consistencia estadística">
+    <div class="panel-head">
+      <h2><span class="sec-num">§ 04</span>Análisis estadístico de consistencia</h2>
+      <p class="panel-desc">Pruebas no paramétricas de Kruskal-Wallis con corrección de Bonferroni sobre las distribuciones de valores SHAP entre los tres algoritmos.</p>
+    </div>
+
+    <div class="callout critical">
+      <span class="tag">Nota metodológica · Interpretación del test</span>
+      <p>La prueba de Kruskal-Wallis compara las <strong>distribuciones numéricas completas</strong> de los valores SHAP entre modelos, no la coincidencia de los rankings. Con n = 3.000 por modelo, su potencia detecta diferencias distribucionales mínimas, esperables por las distintas escalas internas de RandomForest (probabilidades), XGBoost (log-odds) y CatBoost (ordered boosting). La ausencia de "predictores robustos" según este criterio refleja heterogeneidad de escalas, no desacuerdo sobre la importancia relativa.</p>
+    </div>
+
+    <div class="card">
+      <span class="subtitle">Resultados Kruskal-Wallis · Top 20 variables</span>
+      <h3>Estadístico H, p-valor y medianas SHAP por modelo</h3>
+      <div class="tbl-wrap">
+        <table class="editorial" id="tbl-kruskal">
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th class="num">H</th>
+              <th class="num">p-valor</th>
+              <th>Significativo (α = 0,00063)</th>
+              <th class="num">Mediana RF</th>
+              <th class="num">Mediana XGB</th>
+              <th class="num">Mediana CatBoost</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PANEL 05 · PEDAGOGÍA ═══════════ -->
+  <section class="panel" id="panel-pedagogia" data-title="05 · Recomendaciones pedagógicas">
+    <div class="panel-head">
+      <h2><span class="sec-num">§ 05</span>Perfiles de riesgo y protocolo pedagógico</h2>
+      <p class="panel-desc">Traducción de las predicciones del modelo a recomendaciones operativas estratificadas por nivel de riesgo, horizonte temporal y responsables institucionales.</p>
+    </div>
+
+    <div class="two-col" style="margin-bottom:36px">
+      <div class="card">
+        <span class="subtitle">Distribución sobre la cohorte completa</span>
+        <h3>Proporción de estudiantes en cada perfil</h3>
+        <div class="chart-wrap"><canvas id="chart-profiles"></canvas></div>
+        <p class="fig-caption"><span class="fig-tag">Figura 6</span>Distribución de la cohorte en los tres perfiles de riesgo. Predomina el perfil <strong>bajo</strong> (63,6&nbsp;%), coherente con una población mayoritariamente estable; el <strong>23,6&nbsp;%</strong> de perfil alto delimita el volumen real de estudiantes que concentra la intervención prioritaria, una cifra operativamente abordable para los servicios de tutoría.</p>
+      </div>
+      <div class="card">
+        <span class="subtitle">Lectura operativa</span>
+        <h3>Volumen aproximado de intervención</h3>
+        <div class="body" id="profile-volume"></div>
+      </div>
+    </div>
+
+    <div class="profile-grid" id="profile-grid"></div>
+  </section>
+
+  <footer>
+    <span>TFM · Predicción de abandono · UNIR 2026</span>
+    <span class="colophon">Dashboard editorial generado a partir de <code>dashboard_data.json</code></span>
+    <span id="footer-ts"></span>
+  </footer>
+
+</div>
+
+<!-- ════════════════════ DATOS EMBEBIDOS ════════════════════ -->
+<script id="dashboard-data" type="application/json">
+{"class_balance":{"n_total":32593,"n_withdrawn":10156,"n_not_withdrawn":22437,"withdrawn_pct":31.16},"comparison_table":[{"Modelo":"CatBoost","AUC-ROC (media)":0.9459,"AUC-ROC (desv.)":0.0049,"Recall Withdrawn":0.878,"F1 ponderado":0.8713,"Precisión Withdrawn":0.7458,"Tiempo (s)":2524.0},{"Modelo":"XGBoost","AUC-ROC (media)":0.9452,"AUC-ROC (desv.)":0.005,"Recall Withdrawn":0.8683,"F1 ponderado":0.8697,"Precisión Withdrawn":0.7471,"Tiempo (s)":566.3},{"Modelo":"RandomForest","AUC-ROC (media)":0.9442,"AUC-ROC (desv.)":0.005,"Recall Withdrawn":0.9126,"F1 ponderado":0.8698,"Precisión Withdrawn":0.7279,"Tiempo (s)":1280.6}],"per_fold_metrics":{"RandomForest":[{"fold":1,"auc_roc":0.9473710296573891,"recall_withdrawn":0.9192913385826772,"f1_weighted":0.8724467452853207,"precision_withdrawn":0.7302580140734949},{"fold":2,"auc_roc":0.9415938127219392,"recall_withdrawn":0.8946850393700787,"f1_weighted":0.8647359368665712,"precision_withdrawn":0.7248803827751196},{"fold":3,"auc_roc":0.939839791499993,"recall_withdrawn":0.9114173228346457,"f1_weighted":0.8708533790026038,"precision_withdrawn":0.7302839116719243},{"fold":4,"auc_roc":0.940392332481582,"recall_withdrawn":0.9064039408866995,"f1_weighted":0.8637771948777385,"precision_withdrawn":0.7181889149102264},{"fold":5,"auc_roc":0.9462294635722629,"recall_withdrawn":0.9349753694581281,"f1_weighted":0.866586610942197,"precision_withdrawn":0.7129977460555973},{"fold":6,"auc_roc":0.942421169094597,"recall_withdrawn":0.9280788177339901,"f1_weighted":0.8708274241973927,"precision_withdrawn":0.7235023041474654},{"fold":7,"auc_roc":0.9524672251345679,"recall_withdrawn":0.9113300492610837,"f1_weighted":0.8780687261929265,"precision_withdrawn":0.7447665056360708},{"fold":8,"auc_roc":0.9359229150357543,"recall_withdrawn":0.9084645669291339,"f1_weighted":0.8609103462924159,"precision_withdrawn":0.7121913580246914},{"fold":9,"auc_roc":0.9481236023885333,"recall_withdrawn":0.9084645669291339,"f1_weighted":0.8771341901060279,"precision_withdrawn":0.7443548387096774},{"fold":10,"auc_roc":0.9480318909924489,"recall_withdrawn":0.9025590551181102,"f1_weighted":0.8726687509948873,"precision_withdrawn":0.7377312952534192}],"XGBoost":[{"fold":1,"auc_roc":0.9463648469409238,"recall_withdrawn":0.8553149606299213,"f1_weighted":0.8678628768559927,"precision_withdrawn":0.7491379310344828},{"fold":2,"auc_roc":0.9426651297598496,"recall_withdrawn":0.8720472440944882,"f1_weighted":0.8691476067893407,"precision_withdrawn":0.7439126784214946},{"fold":3,"auc_roc":0.9415543373756088,"recall_withdrawn":0.8513779527559056,"f1_weighted":0.8668927010802788,"precision_withdrawn":0.7489177489177489},{"fold":4,"auc_roc":0.9396360738652827,"recall_withdrawn":0.8738916256157635,"f1_weighted":0.8654017681402878,"precision_withdrawn":0.7348798674399337},{"fold":5,"auc_roc":0.9499446800663839,"recall_withdrawn":0.896551724137931,"f1_weighted":0.8769021427002259,"precision_withdrawn":0.7489711934156379},{"fold":6,"auc_roc":0.9424378528841003,"recall_withdrawn":0.8886699507389163,"f1_weighted":0.8663116290529672,"precision_withdrawn":0.7303643724696356},{"fold":7,"auc_roc":0.9532504851470369,"recall_withdrawn":0.865024630541872,"f1_weighted":0.8747302868136536,"precision_withdrawn":0.759515570934256},{"fold":8,"auc_roc":0.9382038520541598,"recall_withdrawn":0.859251968503937,"f1_weighted":0.8607057565811976,"precision_withdrawn":0.7317686504610227},{"fold":9,"auc_roc":0.9495901071048687,"recall_withdrawn":0.8523622047244095,"f1_weighted":0.8741060120311706,"precision_withdrawn":0.765017667844523},{"fold":10,"auc_roc":0.9487089756056462,"recall_withdrawn":0.8681102362204725,"f1_weighted":0.8747985726210692,"precision_withdrawn":0.7583834909716252}],"CatBoost":[{"fold":1,"auc_roc":0.9470688239504822,"recall_withdrawn":0.8769685039370079,"f1_weighted":0.8709985078388134,"precision_withdrawn":0.7456066945606694},{"fold":2,"auc_roc":0.9435802998722753,"recall_withdrawn":0.8661417322834646,"f1_weighted":0.8684264363339432,"precision_withdrawn":0.7451312447078747},{"fold":3,"auc_roc":0.9417727676253035,"recall_withdrawn":0.8789370078740157,"f1_weighted":0.870754765566086,"precision_withdrawn":0.7441666666666666},{"fold":4,"auc_roc":0.9414027993642599,"recall_withdrawn":0.8788177339901477,"f1_weighted":0.8704307528967928,"precision_withdrawn":0.7433333333333333},{"fold":5,"auc_roc":0.9509338531650905,"recall_withdrawn":0.8886699507389163,"f1_weighted":0.8749944238708502,"precision_withdrawn":0.7485477178423237},{"fold":6,"auc_roc":0.943803728387907,"recall_withdrawn":0.8945812807881773,"f1_weighted":0.8725143938124238,"precision_withdrawn":0.7406199021207178},{"fold":7,"auc_roc":0.9531754080942721,"recall_withdrawn":0.8778325123152709,"f1_weighted":0.8782267972729831,"precision_withdrawn":0.7608881298035867},{"fold":8,"auc_roc":0.9380072649467637,"recall_withdrawn":0.8759842519685039,"f1_weighted":0.8585100983438602,"precision_withdrawn":0.7200647249190939},{"fold":9,"auc_roc":0.9501149244719356,"recall_withdrawn":0.8681102362204725,"f1_weighted":0.8721930955464575,"precision_withdrawn":0.7525597269624573},{"fold":10,"auc_roc":0.9489507601953233,"recall_withdrawn":0.8740157480314961,"f1_weighted":0.8755205588034969,"precision_withdrawn":0.7570332480818415}]},"global_shap_importance":{"RandomForest":{"last_interaction_day":0.1652584575795906,"num_assessments_submitted":0.09902472461223805,"interaction_days":0.03428752973827797,"total_clicks":0.02450717304622002,"median_clicks_per_day":0.015168414836138044,"studied_credits":0.014913158617566313,"clicks_resource":0.014539427797773332,"clicks_quiz":0.01453449249213264,"clicks_oucontent":0.014094817698215667,"clicks_forumng":0.013026033180226852,"std_score":0.013019787390181222,"first_interaction_day":0.011458312361187998,"early_active_days":0.010976139127062405,"median_score":0.010798493895297282,"mean_score":0.010334838098178043},"XGBoost":{"last_interaction_day":2.9385383129119873,"num_assessments_submitted":0.6620562672615051,"studied_credits":0.1951884776353836,"region_Scotland":0.13194116950035095,"highest_education_Lower Than A Level":0.10829690843820572,"first_interaction_day":0.0980728417634964,"region_Wales":0.0932324081659317,"region_North Western Region":0.09184033423662186,"imd_band_10-20":0.09032516181468964,"early_active_days":0.08995698392391205,"imd_band_20-30%":0.08863896876573563,"imd_band_30-40%":0.08335524797439575,"interaction_days":0.07945508509874344,"gender_M":0.07885543256998062,"num_of_prev_attempts":0.07710293680429459},"CatBoost":{"last_interaction_day":2.122688585585455,"num_assessments_submitted":0.9394298771963994,"studied_credits":0.2362302447880036,"interaction_days":0.17129455407948693,"first_interaction_day":0.1472041707587221,"gender_M":0.14579749039095408,"region_Scotland":0.12093474715656657,"highest_education_Lower Than A Level":0.11672391952699894,"median_clicks_per_day":0.11642780982491159,"clicks_quiz":0.09847016093482767,"mean_score":0.09705026246327532,"imd_band_10-20":0.09530140743232383,"region_Wales":0.08999036560468059,"imd_band_30-40%":0.085470021495012,"std_score":0.0834613912361225}},"kruskal_results":[{"variable":"last_interaction_day","H_statistic":264.20217352750313,"p_value":4.25820891721766e-58,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.165341464311312,"XGBoost":-2.5193119049072266,"CatBoost":-1.2001063032053423}},{"variable":"num_assessments_submitted","H_statistic":109.46330509229566,"p_value":1.699594487272634e-24,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.07289629573756266,"XGBoost":-0.16448652744293213,"CatBoost":-0.18617811861966682}},{"variable":"studied_credits","H_statistic":425.960892735084,"p_value":3.1898289060913908e-93,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.004375115295694214,"XGBoost":-0.0937991738319397,"CatBoost":-0.07106500754458106}},{"variable":"interaction_days","H_statistic":563.9528450034043,"p_value":3.460952833509801e-123,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.015930831169609343,"XGBoost":0.02517051436007023,"CatBoost":-0.0953816390046123}},{"variable":"region_Scotland","H_statistic":3808.3653988555584,"p_value":0.0,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":0.0016149463793810176,"XGBoost":0.059013791382312775,"CatBoost":0.05416614745851101}},{"variable":"first_interaction_day","H_statistic":28.403267251499702,"p_value":6.796868729746068e-07,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.0007401361824710983,"XGBoost":-0.025739111006259918,"CatBoost":-0.002595368713353789}},{"variable":"highest_education_Lower Than A Level","H_statistic":222.75739035392724,"p_value":4.254487804225818e-49,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":0.0025425988892274994,"XGBoost":0.042419642210006714,"CatBoost":0.033929793454902796}},{"variable":"gender_M","H_statistic":82.39380383600945,"p_value":1.2835501018343655e-18,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.002281476727761773,"XGBoost":-0.044411078095436096,"CatBoost":-0.09697075351262505}},{"variable":"median_clicks_per_day","H_statistic":3661.9583302834462,"p_value":0.0,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.012130212921928457,"XGBoost":-0.047237761318683624,"CatBoost":-0.08105937063817449}},{"variable":"imd_band_10-20","H_statistic":3706.274753720282,"p_value":0.0,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":0.0009582206452588462,"XGBoost":0.04309689998626709,"CatBoost":0.045768876585539256}},{"variable":"region_Wales","H_statistic":4773.422725147148,"p_value":0.0,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":0.0011717236667047176,"XGBoost":0.04400242865085602,"CatBoost":0.03921965300942455}},{"variable":"imd_band_30-40%","H_statistic":3706.1939353723133,"p_value":0.0,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":0.0006374619126456272,"XGBoost":0.03746723756194115,"CatBoost":0.03964430040009452}},{"variable":"imd_band_20-30%","H_statistic":3068.957245994197,"p_value":0.0,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":0.0005680271860597343,"XGBoost":0.04019247740507126,"CatBoost":0.03777700278847601}},{"variable":"clicks_quiz","H_statistic":114.70095034207124,"p_value":1.2388111302946437e-25,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.0018564096375949918,"XGBoost":-0.010185888968408108,"CatBoost":-0.018756194422183868}},{"variable":"region_North Western Region","H_statistic":4521.382958710587,"p_value":0.0,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":0.0006428615172647941,"XGBoost":0.04108668863773346,"CatBoost":0.030596465716972034}},{"variable":"imd_band_50-60%","H_statistic":3867.4686727456624,"p_value":0.0,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":0.0006902057015577584,"XGBoost":0.03055729530751705,"CatBoost":0.036238892176243084}},{"variable":"early_active_days","H_statistic":125.98561910063982,"p_value":4.391070528517682e-28,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.004403518084253661,"XGBoost":0.00437417346984148,"CatBoost":-0.018881292602334593}},{"variable":"mean_score","H_statistic":837.0526744536529,"p_value":1.7231425678554123e-182,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.0059571582999715,"XGBoost":-0.026314228773117065,"CatBoost":-0.024527571991389573}},{"variable":"total_clicks","H_statistic":1085.0986945711606,"p_value":2.3648974536251612e-236,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.01681538671740808,"XGBoost":-0.003092826809734106,"CatBoost":-0.0608983243624025}},{"variable":"clicks_url","H_statistic":220.55409873939203,"p_value":1.2802240401956692e-48,"p_value_significativo_Bonferroni":true,"mediana_SHAP_por_modelo":{"RandomForest":-0.004869812825186209,"XGBoost":-0.02378247305750847,"CatBoost":-0.028461902242827727}}],"robust_predictors":[],"algorithm_dependent":["last_interaction_day","num_assessments_submitted","studied_credits","interaction_days","region_Scotland","first_interaction_day","highest_education_Lower Than A Level","gender_M","median_clicks_per_day","imd_band_10-20","region_Wales","imd_band_30-40%","imd_band_20-30%","clicks_quiz","region_North Western Region","imd_band_50-60%","early_active_days","mean_score","total_clicks","clicks_url"],"risk_distribution":{"bajo":0.636,"alto":0.236,"medio":0.128},"profiles":{"alto":{"level":"alto","probability_range":[0.75,1.0],"typical_signals":["Total de clics en el LMS en el cuartil inferior del curso","Cero o muy pocos accesos al aula virtual en las primeras dos semanas","Calificación media en evaluaciones por debajo del percentil 25","Ausencia de interacción en foros (clicks_forumng = 0)","Una o más evaluaciones no entregadas"],"recommended_actions":["Contacto sincrónico individualizado del tutor en menos de 48 horas, preferiblemente videollamada para verificar la situación del estudiante.","Diagnóstico estructurado de las causas del bajo compromiso (motivacionales, técnicas, socioeconómicas o personales).","Activación del protocolo institucional de retención: derivación a los servicios de orientación psicopedagógica y financiera si procede.","Plan de recuperación académica con hitos semanales y compromiso explícito del estudiante, registrado en el expediente.","Seguimiento semanal del nivel de actividad en el LMS hasta normalizar."],"responsible_actors":["Tutor académico","Coordinador de programa","Servicio de orientación estudiantil"],"time_horizon":"Intervención dentro de las primeras 48 horas; seguimiento durante las cuatro semanas siguientes."},"medio":{"level":"medio","probability_range":[0.5,0.75],"typical_signals":["Interacción LMS irregular: días con alta actividad seguidos de lapsos prolongados sin acceso.","Calificación media de evaluaciones entre los percentiles 25 y 50.","Tendencia descendente del número de clics semana a semana.","Participación esporádica en foros (clicks_forumng > 0 pero baja)."],"recommended_actions":["Mensaje proactivo del tutor mediante el sistema de comunicación del LMS, recordando los próximos hitos del curso.","Invitación a sesión grupal de tutoría sincrónica con compañeros del mismo perfil de actividad, fomentando la integración social.","Sugerencia de recursos complementarios específicos según las evaluaciones con menor rendimiento.","Configuración de notificaciones automáticas en el LMS para recordatorios de entrega."],"responsible_actors":["Tutor académico","Compañeros tutores entre pares"],"time_horizon":"Contacto en menos de una semana; revisión quincenal."},"bajo":{"level":"bajo","probability_range":[0.0,0.5],"typical_signals":["Actividad regular en el LMS con clics distribuidos en el tiempo.","Calificaciones medias en el percentil 50 o superior.","Entregas puntuales de las evaluaciones programadas.","Participación habitual en foros y consulta de materiales."],"recommended_actions":["Mensaje motivacional periódico reforzando el progreso observado.","Inclusión en programas de mentoría inversa: convertir al estudiante en mentor de compañeros con mayor riesgo.","Oferta de retos académicos opcionales (gamificación) que consolide su patrón positivo de aprendizaje.","Encuesta de satisfacción semestral para detectar señales tempranas de desmotivación antes de que se reflejen en métricas."],"responsible_actors":["Tutor académico"],"time_horizon":"Comunicación mensual; revisión semestral del perfil."}},"feature_names":["num_of_prev_attempts","studied_credits","total_clicks","median_clicks_per_day","interaction_days","first_interaction_day","last_interaction_day","early_clicks","early_active_days","clicks_forumng","clicks_oucontent","clicks_quiz","clicks_resource","clicks_url","mean_score","median_score","std_score","num_assessments_submitted","gender_M","region_East Midlands Region","region_Ireland","region_London Region","region_North Region","region_North Western Region","region_Scotland","region_South East Region","region_South Region","region_South West Region","region_Wales","region_West Midlands Region","region_Yorkshire Region","highest_education_HE Qualification","highest_education_Lower Than A Level","highest_education_No Formal quals","highest_education_Post Graduate Qualification","imd_band_10-20","imd_band_20-30%","imd_band_30-40%","imd_band_40-50%","imd_band_50-60%","imd_band_60-70%","imd_band_70-80%","imd_band_80-90%","imd_band_90-100%","age_band_35-55","age_band_55_lt__eq_","disability_Y"]}
+</script>
+
+<!-- ════════════════════ LÓGICA DEL DASHBOARD ════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+// ── Cargar datos embebidos
+const DATA = JSON.parse(document.getElementById('dashboard-data').textContent);
+
+// ── Constantes de marca
+const COLORS = {
+  navy:'#0F2747', steel:'#3F5F85', coral:'#D96A4A', amber:'#E8B14C',
+  moss:'#5C8A6A', burgundy:'#8B2D3F', cream:'#F6F1E7', ink:'#0A1929',
+  mute:'#6B7A8E'
+};
+const MODEL_COLORS = {
+  RandomForest: COLORS.navy,
+  XGBoost: COLORS.coral,
+  CatBoost: COLORS.moss
+};
+const LEAKY_VARS = new Set(['last_interaction_day','num_assessments_submitted','mean_score','median_score','total_clicks','std_score']);
+const ACTIONABLE_VARS = new Set(['studied_credits','early_clicks','early_active_days','first_interaction_day','clicks_quiz','clicks_forumng','imd_band_10-20','imd_band_20-30%','imd_band_30-40%','region_Scotland','region_Wales','highest_education_Lower Than A Level']);
+
+// ── Helpers de formato
+const fmtNum = n => new Intl.NumberFormat('es-ES').format(n);
+const fmtPct = n => (n).toFixed(2).replace('.',',') + ' %';
+const fmtFloat = (n, d=4) => n.toFixed(d).replace('.',',');
+const fmtMin = s => (s/60).toFixed(1).replace('.',',');
+const fmtSci = n => {
+  if (n === 0) return '0';
+  if (Math.abs(n) < 0.001) {
+    return n.toExponential(2).replace('e','×10').replace('+','').replace('-0','-');
+  }
+  return n.toFixed(4).replace('.',',');
+};
+
+// ── Tipografía base de Chart.js
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = COLORS.steel;
+Chart.defaults.borderColor = 'rgba(15,39,71,.1)';
+
+// ────────────────────────────────────────────────────────────────
+// PANEL 1 — RESUMEN
+// ────────────────────────────────────────────────────────────────
+function renderResumen(){
+  // Stat row
+  const cb = DATA.class_balance;
+  const best = DATA.comparison_table[0]; // primera fila = mejor por AUC
+
+  const stats = [
+    { label:'Estudiantes totales',    value:fmtNum(cb.n_total),       sub:'Cohorte íntegra del OULAD' },
+    { label:'Abandono (Withdrawn)',   value:fmtNum(cb.n_withdrawn),   sub:fmtPct(cb.withdrawn_pct)+' del total' },
+    { label:'AUC-ROC máximo',         value:fmtFloat(best['AUC-ROC (media)']), sub:best['Modelo']+' · ±'+fmtFloat(best['AUC-ROC (desv.)']) },
+    { label:'Variables analizadas',   value:fmtNum(DATA.feature_names.length), sub:'tras codificación one-hot' }
+  ];
+  document.getElementById('stat-row').innerHTML = stats.map(s => `
+    <div class="stat-cell">
+      <div class="label">${s.label}</div>
+      <div class="value">${s.value}</div>
+      <div class="sub">${s.sub}</div>
+    </div>
+  `).join('');
+
+  // Class balance chart (doughnut)
+  new Chart(document.getElementById('chart-balance'), {
+    type:'doughnut',
+    data:{
+      labels:['Permanencia (Pass/Fail/Distinction)', 'Abandono (Withdrawn)'],
+      datasets:[{
+        data:[cb.n_not_withdrawn, cb.n_withdrawn],
+        backgroundColor:[COLORS.navy, COLORS.coral],
+        borderColor:COLORS.paper,
+        borderWidth:3,
+        hoverOffset:8
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      cutout:'62%',
+      plugins:{
+        legend:{position:'bottom',labels:{padding:14,font:{size:12}}},
+        tooltip:{
+          callbacks:{
+            label:ctx=>` ${ctx.label}: ${fmtNum(ctx.raw)} (${(ctx.raw/cb.n_total*100).toFixed(1)}%)`
+          }
+        }
+      }
+    }
+  });
+
+  // Risk distribution chart
+  const rd = DATA.risk_distribution;
+  new Chart(document.getElementById('chart-risk'), {
+    type:'bar',
+    data:{
+      labels:['Riesgo bajo','Riesgo medio','Riesgo alto'],
+      datasets:[{
+        data:[rd.bajo*100, rd.medio*100, rd.alto*100],
+        backgroundColor:[COLORS.moss, COLORS.amber, COLORS.burgundy],
+        borderWidth:0,
+        borderRadius:2
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}% de la cohorte`}},
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:12,weight:'500'}}},
+        y:{
+          beginAtZero:true,
+          ticks:{callback:v=>v+' %',font:{size:11}},
+          grid:{color:'rgba(15,39,71,.07)'}
+        }
+      }
+    }
+  });
+}
+
+// ────────────────────────────────────────────────────────────────
+// PANEL 2 — MODELOS
+// ────────────────────────────────────────────────────────────────
+function renderModelos(){
+  const tbody = document.querySelector('#tbl-comparison tbody');
+  const rows = DATA.comparison_table;
+  // Detectar el mejor por columna
+  const colMaxIdx = {};
+  ['AUC-ROC (media)','Recall Withdrawn','Precisión Withdrawn','F1 ponderado'].forEach(col=>{
+    let max = -Infinity, idx = 0;
+    rows.forEach((r,i)=>{ if (r[col] > max){max = r[col]; idx = i;} });
+    colMaxIdx[col] = idx;
+  });
+
+  tbody.innerHTML = rows.map((r,i)=>`
+    <tr>
+      <td><strong>${r['Modelo']}</strong></td>
+      <td class="num ${colMaxIdx['AUC-ROC (media)']===i?'best':''}">${fmtFloat(r['AUC-ROC (media)'])}</td>
+      <td class="num">±${fmtFloat(r['AUC-ROC (desv.)'])}</td>
+      <td class="num ${colMaxIdx['Recall Withdrawn']===i?'best':''}">${fmtFloat(r['Recall Withdrawn'])}</td>
+      <td class="num ${colMaxIdx['Precisión Withdrawn']===i?'best':''}">${fmtFloat(r['Precisión Withdrawn'])}</td>
+      <td class="num ${colMaxIdx['F1 ponderado']===i?'best':''}">${fmtFloat(r['F1 ponderado'])}</td>
+      <td class="num">${fmtMin(r['Tiempo (s)'])}</td>
+    </tr>
+  `).join('');
+
+  // Bar chart: cuatro métricas, tres modelos
+  const labels = rows.map(r=>r['Modelo']);
+  const metrics = [
+    {key:'AUC-ROC (media)',    label:'AUC-ROC',    color:COLORS.navy},
+    {key:'Recall Withdrawn',   label:'Recall',     color:COLORS.coral},
+    {key:'Precisión Withdrawn',label:'Precisión',  color:COLORS.amber},
+    {key:'F1 ponderado',       label:'F1 ponderado',color:COLORS.moss}
+  ];
+  new Chart(document.getElementById('chart-models-bar'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:metrics.map(m=>({
+        label:m.label,
+        data:rows.map(r=>r[m.key]),
+        backgroundColor:m.color,
+        borderWidth:0,
+        borderRadius:2
+      }))
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{padding:14}},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtFloat(ctx.raw)}`}}
+      },
+      scales:{
+        x:{grid:{display:false}},
+        y:{beginAtZero:false,min:0.70,max:1.0,grid:{color:'rgba(15,39,71,.07)'}}
+      }
+    }
+  });
+
+  // Line chart: AUC por pliegue
+  const folds = [...Array(10).keys()].map(i=>i+1);
+  const foldData = DATA.per_fold_metrics;
+  new Chart(document.getElementById('chart-folds'),{
+    type:'line',
+    data:{
+      labels:folds.map(f=>'Pliegue '+f),
+      datasets:Object.keys(foldData).map(model=>({
+        label:model,
+        data:foldData[model].map(d=>d.auc_roc),
+        borderColor:MODEL_COLORS[model],
+        backgroundColor:MODEL_COLORS[model]+'22',
+        borderWidth:2,
+        pointBackgroundColor:MODEL_COLORS[model],
+        pointRadius:4,
+        pointHoverRadius:6,
+        tension:0.15
+      }))
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{padding:14}},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtFloat(ctx.raw)}`}}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:10}}},
+        y:{min:0.93,max:0.96,grid:{color:'rgba(15,39,71,.07)'},ticks:{callback:v=>v.toFixed(3).replace('.',',')}}
+      }
+    }
+  });
+}
+
+// ────────────────────────────────────────────────────────────────
+// PANEL 3 — SHAP
+// ────────────────────────────────────────────────────────────────
+function renderShap(){
+  const imp = DATA.global_shap_importance;
+  const order = ['RandomForest','XGBoost','CatBoost'];
+
+  // Ranking cards
+  document.getElementById('rank-grid').innerHTML = order.map(model=>{
+    const entries = Object.entries(imp[model]).slice(0,15);
+    return `
+      <div class="rank-card">
+        <h4>${model}</h4>
+        <div class="rank-meta">Top 15 · valor SHAP medio absoluto</div>
+        <ul class="rank-list">
+          ${entries.map(([v,val],i)=>{
+            let cls = '';
+            if (LEAKY_VARS.has(v)) cls = 'leak';
+            else if (ACTIONABLE_VARS.has(v)) cls = 'actionable';
+            return `<li class="${cls}"><span class="pos">${(i+1).toString().padStart(2,'0')}</span><span class="var">${v}</span><span class="val">${fmtFloat(val,4)}</span></li>`;
+          }).join('')}
+        </ul>
+      </div>
+    `;
+  }).join('');
+
+  // Robust core: variables in top-10 of all three models
+  const top10 = {};
+  order.forEach(m=>{
+    top10[m] = new Set(Object.keys(imp[m]).slice(0,10));
+  });
+  const robust = [...top10.RandomForest].filter(v => top10.XGBoost.has(v) && top10.CatBoost.has(v));
+  document.getElementById('robust-list').innerHTML = robust.length
+    ? robust.map(v=>{
+        let cls = '';
+        if (LEAKY_VARS.has(v)) cls = 'leak';
+        else if (ACTIONABLE_VARS.has(v)) cls = 'actionable';
+        return `<span class="pill ${cls}">${v}</span>`;
+      }).join('')
+    : '<span style="color:var(--mute);font-style:italic">No se identifican variables compartidas en el top-10 de los tres modelos.</span>';
+
+  // ── Gráfico comparativo: importancia SHAP normalizada (% del máximo de cada modelo)
+  const allVars = new Set();
+  order.forEach(m => Object.keys(imp[m]).forEach(v => allVars.add(v)));
+  const maxByModel = {};
+  order.forEach(m => { maxByModel[m] = Math.max(...Object.values(imp[m])); });
+
+  const norm = {};
+  allVars.forEach(v=>{
+    norm[v] = {};
+    let sum = 0, cnt = 0;
+    order.forEach(m=>{
+      const val = imp[m][v];
+      const n = (val != null) ? (val / maxByModel[m]) * 100 : 0;
+      norm[v][m] = n;
+      if (val != null){ sum += n; cnt++; }
+    });
+    norm[v].avg = cnt ? sum / cnt : 0;
+  });
+  const topVars = [...allVars].sort((a,b)=>norm[b].avg - norm[a].avg).slice(0,14);
+
+  new Chart(document.getElementById('chart-shap'),{
+    type:'bar',
+    data:{
+      labels: topVars.map(v => LEAKY_VARS.has(v) ? v + '  ⚠' : v),
+      datasets: order.map(m=>({
+        label: m,
+        data: topVars.map(v => norm[v][m]),
+        backgroundColor: MODEL_COLORS[m],
+        borderWidth:0,
+        borderRadius:2,
+        barPercentage:0.82,
+        categoryPercentage:0.78
+      }))
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{padding:14}},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)} % del máximo`}}
+      },
+      scales:{
+        x:{
+          beginAtZero:true, max:100,
+          grid:{color:'rgba(15,39,71,.07)'},
+          ticks:{callback:v=>v+' %',font:{size:11}},
+          title:{display:true,text:'Importancia SHAP relativa (% del máximo de cada modelo)',color:COLORS.mute,font:{size:11}}
+        },
+        y:{
+          grid:{display:false},
+          ticks:{font:{family:"'JetBrains Mono', monospace",size:10.5},color:COLORS.navy}
+        }
+      }
+    }
+  });
+}
+
+// ────────────────────────────────────────────────────────────────
+// PANEL 4 — CONSISTENCIA
+// ────────────────────────────────────────────────────────────────
+function renderConsistencia(){
+  const tbody = document.querySelector('#tbl-kruskal tbody');
+  tbody.innerHTML = DATA.kruskal_results.map(r=>{
+    const m = r.mediana_SHAP_por_modelo;
+    const sig = r.p_value_significativo_Bonferroni;
+    return `
+      <tr>
+        <td class="var-name ${LEAKY_VARS.has(r.variable)?'leak':''}">${r.variable}</td>
+        <td class="num">${r.H_statistic.toFixed(2).replace('.',',')}</td>
+        <td class="num">${fmtSci(r.p_value)}</td>
+        <td style="color:${sig?COLORS.burgundy:COLORS.moss};font-weight:600;font-family:'JetBrains Mono',monospace;font-size:11.5px">${sig?'SÍ':'NO'}</td>
+        <td class="num">${fmtFloat(m.RandomForest,4)}</td>
+        <td class="num">${fmtFloat(m.XGBoost,4)}</td>
+        <td class="num">${fmtFloat(m.CatBoost,4)}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ────────────────────────────────────────────────────────────────
+// PANEL 5 — PEDAGOGÍA
+// ────────────────────────────────────────────────────────────────
+function renderPedagogia(){
+  const rd = DATA.risk_distribution;
+  const total = DATA.class_balance.n_total;
+
+  new Chart(document.getElementById('chart-profiles'),{
+    type:'doughnut',
+    data:{
+      labels:['Bajo','Medio','Alto'],
+      datasets:[{
+        data:[rd.bajo*100, rd.medio*100, rd.alto*100],
+        backgroundColor:[COLORS.moss, COLORS.amber, COLORS.burgundy],
+        borderColor:'#FDFBF6',
+        borderWidth:3,
+        hoverOffset:8
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      cutout:'62%',
+      plugins:{
+        legend:{position:'bottom',labels:{padding:14}},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw.toFixed(1)}%`}}
+      }
+    }
+  });
+
+  const volumes = [
+    {level:'alto', label:'Riesgo alto', pct:rd.alto, color:COLORS.burgundy, frase:'requieren intervención intensiva en menos de 48 h'},
+    {level:'medio', label:'Riesgo medio', pct:rd.medio, color:COLORS.amber, frase:'reciben contacto proactivo durante la semana'},
+    {level:'bajo', label:'Riesgo bajo', pct:rd.bajo, color:COLORS.moss, frase:'mantienen comunicación de refuerzo mensual'}
+  ];
+  document.getElementById('profile-volume').innerHTML = volumes.map(v=>{
+    const n = Math.round(total * v.pct);
+    return `
+      <p style="margin-bottom:14px;padding-left:14px;border-left:3px solid ${v.color}">
+        <strong style="font-family:'Fraunces',serif;font-size:18px;color:${v.color}">${fmtNum(n)}</strong>
+        <span style="color:var(--mute);font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;margin-left:6px">${(v.pct*100).toFixed(1)}%</span><br>
+        <span style="font-size:12.5px;color:var(--steel)">estudiantes de perfil <strong style="color:${v.color}">${v.label.toLowerCase()}</strong> que ${v.frase}.</span>
+      </p>
+    `;
+  }).join('');
+
+  // Profile cards
+  const profiles = DATA.profiles;
+  const orderLevels = ['alto','medio','bajo'];
+  document.getElementById('profile-grid').innerHTML = orderLevels.map(lvl=>{
+    const p = profiles[lvl];
+    const [lo, hi] = p.probability_range;
+    return `
+      <article class="profile-card ${lvl}">
+        <header>
+          <span class="level-tag">${p.level}</span>
+          <div class="prob-range">${(lo*100).toFixed(0)}%<span class="arrow">→</span>${(hi*100).toFixed(0)}%</div>
+          <p class="horizon">${p.time_horizon}</p>
+        </header>
+        <div class="section">
+          <h4>Señales típicas detectadas</h4>
+          <ul>${p.typical_signals.map(s=>`<li>${s}</li>`).join('')}</ul>
+        </div>
+        <div class="section">
+          <h4>Acciones recomendadas</h4>
+          <ul>${p.recommended_actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+        </div>
+        <div class="section">
+          <h4>Responsables institucionales</h4>
+          <div class="actors">
+            ${p.responsible_actors.map(a=>`<span class="actor-chip">${a}</span>`).join('')}
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+// ────────────────────────────────────────────────────────────────
+// TAB SWITCHING
+// ────────────────────────────────────────────────────────────────
+function setupTabs(){
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-'+tab.dataset.panel).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+}
+
+// ────────────────────────────────────────────────────────────────
+// EXPORTACIÓN PDF
+// ────────────────────────────────────────────────────────────────
+function showLoading(msg){
+  document.getElementById('pdf-msg').textContent = msg;
+  document.getElementById('pdf-loading').classList.add('active');
+}
+function hideLoading(){
+  document.getElementById('pdf-loading').classList.remove('active');
+}
+
+async function exportSection(){
+  const active = document.querySelector('.panel.active');
+  const title = active.dataset.title || 'seccion';
+  showLoading('Generando PDF de la sección…');
+  try {
+    const opt = {
+      margin: [12, 10, 14, 10],
+      filename: 'TFM_'+title.replace(/[^a-zA-Z0-9]/g,'_')+'.pdf',
+      image: { type:'jpeg', quality: 0.96 },
+      html2canvas: { scale: 2, useCORS:true, backgroundColor:'#FDFBF6', windowWidth: 1480 },
+      jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
+      pagebreak: { mode:['css','legacy'] }
+    };
+    // Clonar la sección con su cabecera global para que el PDF tenga contexto
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'background:#FDFBF6;padding:24px 32px;max-width:1480px';
+    const head = document.querySelector('.masthead').cloneNode(true);
+    // Quitar botones de export del header clonado
+    head.querySelectorAll('.export-cluster').forEach(e=>e.remove());
+    wrapper.appendChild(head);
+    wrapper.appendChild(active.cloneNode(true));
+    document.body.appendChild(wrapper);
+    await html2pdf().set(opt).from(wrapper).save();
+    document.body.removeChild(wrapper);
+  } catch(e){
+    alert('Error al exportar PDF: '+e.message);
+    console.error(e);
+  } finally {
+    hideLoading();
+  }
+}
+
+async function exportFull(){
+  showLoading('Generando memoria completa en PDF…');
+  try {
+    // Activamos el modo pdf-export para mostrar todas las pestañas en orden
+    document.body.classList.add('pdf-export');
+    // Esperar un tick para que el navegador re-pinte
+    await new Promise(r=>setTimeout(r,300));
+    // Forzar redibujado de Chart.js
+    Object.values(Chart.instances).forEach(c=>c.resize());
+    await new Promise(r=>setTimeout(r,500));
+
+    const opt = {
+      margin: [10, 10, 12, 10],
+      filename: 'TFM_Dashboard_Completo.pdf',
+      image: { type:'jpeg', quality: 0.95 },
+      html2canvas: { scale: 1.8, useCORS:true, backgroundColor:'#FDFBF6', windowWidth: 1480 },
+      jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
+      pagebreak: { mode:['css','legacy'], before:'.panel' }
+    };
+    await html2pdf().set(opt).from(document.getElementById('app-root')).save();
+  } catch(e){
+    alert('Error al exportar PDF: '+e.message);
+    console.error(e);
+  } finally {
+    document.body.classList.remove('pdf-export');
+    hideLoading();
+  }
+}
+
+// Exponer al ámbito global para los onclick
+window.exportSection = exportSection;
+window.exportFull = exportFull;
+
+// ────────────────────────────────────────────────────────────────
+// CERRAR / REABRIR DASHBOARD
+// ────────────────────────────────────────────────────────────────
+function closeDashboard(){
+  // Mostrar la pantalla de cierre
+  document.getElementById('close-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  window.scrollTo({top:0,behavior:'instant'});
+  // Si la ventana fue abierta por script, intentar cerrarla del todo
+  try { window.close(); } catch(e){ /* el navegador puede bloquearlo */ }
+}
+function reopenDashboard(){
+  document.getElementById('close-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+window.closeDashboard = closeDashboard;
+window.reopenDashboard = reopenDashboard;
+
+// ────────────────────────────────────────────────────────────────
+// FOOTER
+// ────────────────────────────────────────────────────────────────
+function renderFooter(){
+  const d = new Date();
+  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('footer-ts').textContent =
+    'Generado el ' + d.getDate() + ' de ' + months[d.getMonth()] + ' de ' + d.getFullYear();
+}
+
+// ────────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  setupTabs();
+  renderResumen();
+  renderModelos();
+  renderShap();
+  renderConsistencia();
+  renderPedagogia();
+  renderFooter();
+});
+
+})();
+</script>
+</body>
+</html>

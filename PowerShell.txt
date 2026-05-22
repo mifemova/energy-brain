@@ -1,0 +1,41 @@
+PowerShell
+
+Crear el entorno virtual 
+# 0. Crear el entorno .venv
+Navega en la terminal hasta la carpeta de tu proyecto y ejecuta:
+python -m venv .venv
+
+
+
+
+# 1. Activa tu entorno virtual .venv
+.\.venv\Scripts\Activate.ps1
+
+# 2. Actualiza pip para evitar errores con paquetes pesados
+python -m pip install --upgrade pip
+
+# 3. Instala todas las librerías del archivo
+pip install -r requirements.txt
+
+
+# 1. Activa tu entorno virtual .venv
+.\.venv\Scripts\Activate.ps1
+
+# 2. Actualiza pip para evitar errores con paquetes pesados
+python -m pip install --upgrade pip
+
+# 3. Instala todas las librerías del archivo
+pip install -r requirements.tx
+
+
+
+
+
+
+Nota: sobre la activación: Si al ejecutar el primer comando recibes un error en rojo que habla sobre la "política de ejecución de scripts" (Execution Policy), ejecuta este comando primero para dar permiso a PowerShell y luego vuelve a intentar la activación:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+
+
+
+
+¿Qué estás instalando exactamente?Tu archivo es un excelente combo para un Científico de Datos / Ingeniero de IA. Al terminar la instalación, tendrás un entorno ultra equipado con:Motores de Machine Learning: scikit-learn, xgboost, catboost y herramientas de interpretabilidad como shap.  Análisis y Manipulación de Datos: numpy, pandas, scipy y pyarrow.  Visualización de Datos: matplotlib, seaborn, plotly y altair.  Interfaces y Apps de IA: streamlit (para crear aplicaciones web rápidas para tus modelos) y todo el ecosistema de jupyterlab / notebook para experimentar. 
